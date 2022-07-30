@@ -9,13 +9,13 @@
     "tsConfigPath": "apps/nestjs-boilerplate/tsconfig.app.json"
   },
   "projects": {
-    "api": {
+    "api-user": {
       "type": "application",
-      "root": "apps/api",
+      "root": "apps/user",
       "entryFile": "main",
-      "sourceRoot": "apps/api/src",
+      "sourceRoot": "apps/api-user/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/api/tsconfig.app.json"
+        "tsConfigPath": "apps/api-user/tsconfig.app.json"
       }
     },
     "admin": {
@@ -34,6 +34,24 @@
       "sourceRoot": "libs/user/src",
       "compilerOptions": {
         "tsConfigPath": "libs/user/tsconfig.lib.json"
+      }
+    },
+    "config": {
+      "type": "library",
+      "root": "libs/config",
+      "entryFile": "index",
+      "sourceRoot": "libs/config/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/config/tsconfig.lib.json"
+      }
+    },
+    "api-user": {
+      "type": "application",
+      "root": "apps/api-user",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-user/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-user/tsconfig.app.json"
       }
     }
   }
