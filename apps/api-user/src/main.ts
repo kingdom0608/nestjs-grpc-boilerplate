@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { HttpException, HttpStatus, ValidationPipe } from '@nestjs/common';
-import { ApiUserModule } from './api-user.module';
+import { ApiUserModule } from './api-user-module';
 import { setupSwagger } from '../../../swagger';
 
 async function bootstrap() {
