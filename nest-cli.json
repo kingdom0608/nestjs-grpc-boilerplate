@@ -11,7 +11,7 @@
   "projects": {
     "api-user": {
       "type": "application",
-      "root": "apps/user",
+      "root": "apps/api-user",
       "entryFile": "main",
       "sourceRoot": "apps/api-user/src",
       "compilerOptions": {
@@ -45,13 +45,13 @@
         "tsConfigPath": "libs/config/tsconfig.lib.json"
       }
     },
-    "api-user": {
-      "type": "application",
-      "root": "apps/api-user",
-      "entryFile": "main",
-      "sourceRoot": "apps/api-user/src",
+    "product": {
+      "type": "library",
+      "root": "libs/product",
+      "entryFile": "index",
+      "sourceRoot": "libs/product/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/api-user/tsconfig.app.json"
+        "tsConfigPath": "libs/product/tsconfig.lib.json"
       }
     }
   }

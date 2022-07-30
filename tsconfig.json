@@ -29,6 +29,12 @@
       ],
       "@app/config/*": [
         "libs/config/src/*"
+      ],
+      "@app/product": [
+        "libs/product/src"
+      ],
+      "@app/product/*": [
+        "libs/product/src/*"
       ]
     }
   }
