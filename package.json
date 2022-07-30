@@ -10,8 +10,9 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
-    "start:local:api-user": "NODE_ENV=lcoal nest start api-user --watch",
+    "start:local:api-user": "NODE_ENV=local nest start api-user --watch",
     "start:dev:api-user": "NODE_ENV=dev nest start api-user --watch",
+    "start:test:api-user": "NODE_ENV=test nest start api-user --watch",
     "start:prod:api-user": "NODE_ENV=prod node dist/main",
     "start:debug": "nest start --debug --watch",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -80,9 +81,9 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
+      "^@app/product(|/.*)$": "<rootDir>/libs/product/src/$1",
       "^@app/user(|/.*)$": "<rootDir>/libs/user/src/$1",
-      "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1",
-      "^@app/product(|/.*)$": "<rootDir>/libs/product/src/$1"
+      "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1"
     }
   }
 }

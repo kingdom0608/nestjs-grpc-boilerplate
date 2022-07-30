@@ -1,14 +1,14 @@
-import { UserRepository } from '@app/user';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { generateTypeormModuleOptions } from '@app/config/typeorm-config';
 import { ConfigModule } from '@nestjs/config';
+import { UserRepository } from '@app/user';
+import { generateTypeormModuleOptions } from '@app/config/typeorm-config';
 
 describe('userRepository', () => {
   let userRepository: UserRepository;
   let app: TestingModule;
   let createdUser;
-  const testEmail = 'test@mausin.com';
+  const testEmail = 'testemail@mausinsa.com';
 
   beforeAll(async () => {
     app = await Test.createTestingModule({

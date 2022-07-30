@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ProductService } from './product.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProductEntity } from '@app/product/entities';
+import { ProductRepository } from '@app/product/repositories';
 
 @Module({
-  providers: [ProductService],
-  exports: [ProductService],
+  imports: [TypeOrmModule.forFeature([ProductEntity])],
+  providers: [ProductRepository],
+  exports: [ProductRepository],
 })
 export class ProductModule {}
