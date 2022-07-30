@@ -2,6 +2,7 @@ import { UserRepository } from '@app/user';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { generateTypeormModuleOptions } from '@app/config/typeorm-config';
+import { ConfigModule } from '@nestjs/config';
 
 describe('userRepository', () => {
   let userRepository: UserRepository;
@@ -12,6 +13,10 @@ describe('userRepository', () => {
   beforeAll(async () => {
     app = await Test.createTestingModule({
       imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+          envFilePath: 'env/test.env',
+        }),
         TypeOrmModule.forRootAsync({
           useFactory: () => generateTypeormModuleOptions(),
         }),
