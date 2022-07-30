@@ -1,7 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export function generateTypeormModuleOptions(): TypeOrmModuleOptions {
-  console.log(process.env);
   return {
     type: 'mysql',
     host: process.env.MYSQL_HOST,

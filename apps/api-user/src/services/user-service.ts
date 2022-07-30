@@ -8,10 +8,20 @@ export class UserService {
     @InjectRepository(UserRepository)
     private readonly userRepository: UserRepository,
   ) {}
-  async getHello() {
-    const result = await this.userRepository.getUserByEmail('test@mausin.com');
-    console.log(result);
 
-    return 'ok';
+  /**
+   * 유저 이메일 조회
+   * @param email
+   */
+  async getUserByEmail(email: string) {
+    const user = await this.userRepository.getUserByEmail(email);
+
+    return {
+      id: user.id,
+      email: user.email,
+      status: user.status,
+      createdDate: user.createdDate,
+      updatedDate: user.updatedDate,
+    };
   }
 }
