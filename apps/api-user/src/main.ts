@@ -10,7 +10,7 @@ async function bootstrap() {
     cors: true,
   });
 
-  setupSwagger(app);
+  setupSwagger(app, 'user');
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {

@@ -6,13 +6,15 @@ import {
 } from '@nestjs/swagger';
 import * as fs from 'fs';
 
-export function setupSwagger(app: INestApplication) {
+export type TDomain = 'product' | 'user';
+
+export function setupSwagger(app: INestApplication, domain: TDomain) {
   const file = './package.json';
   const packageJsonData = JSON.parse(fs.readFileSync(file, 'utf8'));
 
   const options = new DocumentBuilder()
-    .setTitle('NestJS Boilerplate API Server')
-    .setDescription('NestJS Boilerplate API 서버')
+    .setTitle(`NestJS Boilerplate API-${domain.toUpperCase()} Server`)
+    .setDescription(`NestJS Boilerplate API-${domain.toUpperCase()} 서버`)
     .setVersion(`${packageJsonData.version}`)
     .build();
 
@@ -26,7 +28,7 @@ export function setupSwagger(app: INestApplication) {
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup(
-    `/api/${packageJsonData.version}/docs`,
+    `/api-${domain}/${packageJsonData.version}/docs`,
     app,
     document,
     customOptions,
