@@ -13,7 +13,13 @@ export class UserService {
    * 유저 이메일 조회
    * @param email
    */
-  async getUserByEmail(email: string) {
+  async getUserByEmail(email: string): Promise<{
+    id: number;
+    email: string;
+    status: string;
+    createdDate: Date;
+    updatedDate: Date;
+  }> {
     const user = await this.userRepository.getUserByEmail(email);
 
     return {
