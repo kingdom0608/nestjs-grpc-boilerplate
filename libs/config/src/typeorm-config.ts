@@ -11,5 +11,6 @@ export function generateTypeormModuleOptions(): TypeOrmModuleOptions {
     synchronize: false,
     keepConnectionAlive: true,
     autoLoadEntities: true,
+    logging: true,
   };
 }
