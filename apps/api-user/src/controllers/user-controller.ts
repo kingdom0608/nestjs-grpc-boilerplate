@@ -28,6 +28,7 @@ import {
   UnauthorizedType,
   UserType,
 } from '../app-user/types';
+import { ProductService } from '../../../api-product/src/app-product/services';
 
 @ApiTags('유저')
 @ApiResponse({
@@ -57,11 +58,17 @@ import {
 @Controller()
 export class UserController implements OnModuleInit {
   private userService;
+  private productService;
 
-  constructor(@Inject('USER_PACKAGE') private readonly client: ClientGrpc) {}
+  constructor(
+    @Inject('USER_PACKAGE') private readonly client: ClientGrpc,
+    @Inject('PRODUCT_PACKAGE') private readonly productClient: ClientGrpc,
+  ) {}
 
   onModuleInit() {
     this.userService = this.client.getService<UserService>('UserService');
+    this.productService =
+      this.productClient.getService<ProductService>('ProductService');
   }
 
   @ApiOperation({ summary: '유저 이메일 조회' })

@@ -35,6 +35,10 @@ function parsedEnvFile() {
     }),
     ClientsModule.register([
       {
+        name: 'USER_PACKAGE',
+        ...configureGrpc('user', 'user'),
+      },
+      {
         name: 'PRODUCT_PACKAGE',
         ...configureGrpc('product', 'product'),
       },
