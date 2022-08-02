@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { configureGrpc } from '@app/config';
-import { ProductController } from './controllers';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule } from '@nestjs/microservices';
+import { configureGrpc, generateTypeormModuleOptions } from '@app/config';
+import { ProductModule } from '@app/product';
+import { ProductService } from './services';
 
 /**
  * 환경변수 파일 파싱
@@ -28,14 +30,18 @@ function parsedEnvFile() {
       isGlobal: true,
       envFilePath: parsedEnvFile(),
     }),
+    TypeOrmModule.forRootAsync({
+      useFactory: () => generateTypeormModuleOptions(),
+    }),
     ClientsModule.register([
       {
         name: 'PRODUCT_PACKAGE',
         ...configureGrpc('product', 'product'),
       },
     ]),
+    ProductModule,
   ],
-  controllers: [ProductController],
+  controllers: [ProductService],
   providers: [],
 })
-export class ApiProductModule {}
+export class AppProductModule {}

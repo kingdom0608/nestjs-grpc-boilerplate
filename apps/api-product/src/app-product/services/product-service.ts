@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductRepository } from '@app/product';
+import { GrpcMethod } from '@nestjs/microservices';
 
-@Injectable()
+@Controller()
 export class ProductService {
   constructor(
     @InjectRepository(ProductRepository)
@@ -13,7 +14,8 @@ export class ProductService {
    * 상품 아이디 조회
    * @param id
    */
-  async getProductById(id: number) {
+  @GrpcMethod('ProductService', 'GetProductById')
+  async getProductById({ id: id }) {
     const product = await this.productRepository.getProductById(id);
 
     return {

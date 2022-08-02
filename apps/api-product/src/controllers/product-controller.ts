@@ -3,6 +3,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Inject,
   Param,
   Req,
   Res,
@@ -14,7 +15,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { ProductService } from '../services';
+import { ProductService } from '../app-product/services';
 import { Request, Response } from 'express';
 import {
   BadRequestType,
@@ -24,7 +25,8 @@ import {
   ServerErrorType,
   UnauthorizedType,
   ProductType,
-} from '../types';
+} from '../app-product/types';
+import { ClientGrpc } from '@nestjs/microservices';
 
 @ApiTags('상품')
 @ApiResponse({
@@ -53,7 +55,14 @@ import {
 })
 @Controller()
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  private productService;
+
+  constructor(@Inject('PRODUCT_PACKAGE') private readonly client: ClientGrpc) {}
+
+  onModuleInit() {
+    this.productService =
+      this.client.getService<ProductService>('ProductService');
+  }
 
   @ApiOperation({ summary: '상품 아이디 조회' })
   @ApiOkResponse({ type: ProductType })
@@ -69,7 +78,11 @@ export class ProductController {
     @Res() res: Response,
   ) {
     try {
-      const product = await this.productService.getProductById(id);
+      const product = await this.productService
+        .getProductById({
+          id: id,
+        })
+        .toPromise();
 
       return res.json({
         result: 'ok',
