@@ -15,7 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { UserService } from '../services';
+import { UserService } from '../app-user/services';
 import {
   BadRequestType,
   ConflictType,
@@ -24,7 +24,7 @@ import {
   ServerErrorType,
   UnauthorizedType,
   UserType,
-} from '../types';
+} from '../app-user/types';
 
 @ApiTags('유저')
 @ApiResponse({
