@@ -92,11 +92,11 @@ export class UserController implements OnModuleInit {
         .toPromise();
 
       /** product gRPC 통신 부분 */
-      await this.productService
-        .getProductById({
-          id: 2, // 테스트 위한 고정 값
-        })
-        .toPromise();
+      // await this.productService
+      //   .getProductById({
+      //     id: 2, // 테스트 위한 고정 값
+      //   })
+      //   .toPromise();
 
       return res.json({
         result: 'ok',
