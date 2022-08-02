@@ -1,14 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { HttpException, HttpStatus, ValidationPipe } from '@nestjs/common';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { configureGrpc } from '@app/config';
 import { ApiUserModule } from './api-user-module';
 import { setupSwagger } from '../../../swagger';
+import { AppUserModule } from './app-user/app-user-module';
 
 async function bootstrap() {
   const port = 3000;
   const app = await NestFactory.create<NestExpressApplication>(ApiUserModule, {
     cors: true,
   });
+  const microServiceApp =
+    await NestFactory.createMicroservice<MicroserviceOptions>(AppUserModule, {
+      ...configureGrpc('user', 'user'),
+    });
 
   setupSwagger(app, 'user');
   app.useGlobalPipes(
@@ -32,6 +39,7 @@ async function bootstrap() {
   });
 
   await app.listen(port);
+  await microServiceApp.listen();
 
   console.log(`🚀 server ready at http://localhost:${port} 🚀`);
 }

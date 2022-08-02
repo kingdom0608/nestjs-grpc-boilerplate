@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from '@app/user';
-import { generateTypeormModuleOptions } from '@app/config/typeorm-config';
-import { UserService } from './app-user/services';
+import { ClientsModule } from '@nestjs/microservices';
+import { configureGrpc } from '@app/config';
 import { UserController } from './controllers';
 
 /**
@@ -30,12 +28,14 @@ function parsedEnvFile() {
       isGlobal: true,
       envFilePath: parsedEnvFile(),
     }),
-    TypeOrmModule.forRootAsync({
-      useFactory: () => generateTypeormModuleOptions(),
-    }),
-    UserModule,
+    ClientsModule.register([
+      {
+        name: 'USER_PACKAGE',
+        ...configureGrpc('user', 'user'),
+      },
+    ]),
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [],
 })
 export class ApiUserModule {}

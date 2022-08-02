@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package user;
+
+import 'user.proto';
+
+message Empty {
+
+}
+
+message EntityById {
+  int32 id = 1;
+}
+
+message EntityByIdAndToken {
+  int32 id = 1;
+  optional string token = 2;
+}
+
+message DefaultJson {
+  int32 id = 1;
+  string name = 2;
+}

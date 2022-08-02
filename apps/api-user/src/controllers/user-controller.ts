@@ -3,6 +3,8 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Inject,
+  OnModuleInit,
   Param,
   Req,
   Res,
@@ -14,6 +16,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ClientGrpc } from '@nestjs/microservices';
 import { Request, Response } from 'express';
 import { UserService } from '../app-user/services';
 import {
@@ -52,8 +55,14 @@ import {
   type: ServerErrorType,
 })
 @Controller()
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+export class UserController implements OnModuleInit {
+  private userService;
+
+  constructor(@Inject('USER_PACKAGE') private readonly client: ClientGrpc) {}
+
+  onModuleInit() {
+    this.userService = this.client.getService<UserService>('UserService');
+  }
 
   @ApiOperation({ summary: '유저 이메일 조회' })
   @ApiOkResponse({ type: UserType })
@@ -69,7 +78,11 @@ export class UserController {
     @Res() res: Response,
   ) {
     try {
-      const user = await this.userService.getUserByEmail(email);
+      const user = await this.userService
+        .getUserByEmail({
+          email: email,
+        })
+        .toPromise();
 
       return res.json({
         result: 'ok',

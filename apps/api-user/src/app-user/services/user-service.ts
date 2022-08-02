@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { GrpcMethod } from '@nestjs/microservices';
 import { UserRepository } from '@app/user';
 
-@Injectable()
+@Controller()
 export class UserService {
   constructor(
     @InjectRepository(UserRepository)
@@ -13,7 +14,8 @@ export class UserService {
    * 유저 이메일 조회
    * @param email
    */
-  async getUserByEmail(email: string): Promise<{
+  @GrpcMethod('UserService', 'GetUserByEmail')
+  async getUserByEmail({ email: email }): Promise<{
     id: number;
     email: string;
     status: string;
