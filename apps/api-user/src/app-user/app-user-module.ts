@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule } from '@nestjs/microservices';
 import { configureGrpc, generateTypeormModuleOptions } from '@app/config';
-import { UserModule } from '@app/user';
+import { UserEntity } from './entities';
 import { UserService } from './services';
 
 /**
@@ -33,6 +33,7 @@ function parsedEnvFile() {
     TypeOrmModule.forRootAsync({
       useFactory: () => generateTypeormModuleOptions(),
     }),
+    TypeOrmModule.forFeature([UserEntity]),
     ClientsModule.register([
       {
         name: 'USER_PACKAGE',
@@ -43,7 +44,6 @@ function parsedEnvFile() {
         ...configureGrpc('product', 'product'),
       },
     ]),
-    UserModule,
   ],
   controllers: [UserService],
   providers: [],
