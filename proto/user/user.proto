@@ -6,6 +6,10 @@ service UserService {
   rpc GetUserByEmail (UserRequest) returns (User);
 }
 
+message UserRequest {
+  string email = 1;
+}
+
 message User {
   int32 id = 1;
   string email = 2;
@@ -14,6 +18,3 @@ message User {
   string updatedDate = 5;
 }
 
-message UserRequest {
-  string email = 1;
-}

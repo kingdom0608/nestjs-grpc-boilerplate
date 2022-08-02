@@ -17,7 +17,7 @@ export function configureGrpc(
   const protoDirPath = join(
     process.env.PWD,
     `/proto/${domainName}`,
-    `/${serviceName}.proto`,
+    `/service.proto`,
   );
 
   const url = `${generateDNS()}:${APP_PORTS[serviceName]}`;
@@ -34,6 +34,7 @@ export function configureGrpc(
       package: [`${domainName}`],
       protoPath: [protoDirPath],
       loader: {
+        keepCase: true,
         includeDirs: [join(process.env.PWD, `/proto/${domainName}`)],
       },
     },

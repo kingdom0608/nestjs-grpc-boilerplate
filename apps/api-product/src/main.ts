@@ -1,16 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { HttpException, HttpStatus, ValidationPipe } from '@nestjs/common';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { configureGrpc } from '@app/config';
 import { ApiProductModule } from './api-product-module';
+import { AppProductModule } from './app-product/app-product-module';
 import { setupSwagger } from '../../../swagger';
 
 async function bootstrap() {
   const port = process.env.STAGE === 'prod' ? 3000 : 3001;
-
   const app = await NestFactory.create<NestExpressApplication>(
     ApiProductModule,
     {
       cors: true,
+    },
+  );
+  const productApp = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppProductModule,
+    {
+      ...configureGrpc('product', 'product'),
     },
   );
 
@@ -36,6 +44,7 @@ async function bootstrap() {
   });
 
   await app.listen(port);
+  await productApp.listen();
 
   console.log(`🚀 server ready at http://localhost:${port} 🚀`);
 }

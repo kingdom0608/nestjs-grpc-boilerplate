@@ -1,11 +1,15 @@
-import { Connection, EntityRepository, Repository } from 'typeorm';
-import { UserEntity } from '@app/user/entities';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from '../entities';
+import { GrpcMethod } from '@nestjs/microservices';
 
-@EntityRepository(UserEntity)
-export class UserRepository extends Repository<UserEntity> {
-  constructor(private readonly connection: Connection) {
-    super();
-  }
+@Injectable()
+export class UserService {
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
   /**
    * 유저 생성
@@ -16,7 +20,7 @@ export class UserRepository extends Repository<UserEntity> {
     email: string;
     password: string;
   }): Promise<UserEntity> {
-    return await this.connection.getRepository(UserEntity).save({
+    return this.userRepository.save({
       email: userData.email,
       password: userData.password,
       status: 'ACTIVE',
@@ -29,7 +33,7 @@ export class UserRepository extends Repository<UserEntity> {
    * @return Promise<UserEntity>
    */
   async getUserById(id: number): Promise<UserEntity> {
-    return await this.connection.getRepository(UserEntity).findOne({
+    return await this.userRepository.findOne({
       where: {
         id: id,
       },
@@ -41,11 +45,10 @@ export class UserRepository extends Repository<UserEntity> {
    * @param email
    * @return Promise<UserEntity>
    */
-  async getUserByEmail(email: string): Promise<UserEntity> {
-    return await this.connection.getRepository(UserEntity).findOne({
-      where: {
-        email: email,
-      },
+  @GrpcMethod('UserService', 'GetUserByEmail')
+  async getUserByEmail({ email: email }): Promise<UserEntity> {
+    return await this.userRepository.findOne({
+      email: email,
     });
   }
 
@@ -58,7 +61,7 @@ export class UserRepository extends Repository<UserEntity> {
     const user = await this.getUserById(id);
 
     /** 유저 삭제 */
-    await this.connection.getRepository(UserEntity).delete(id);
+    await this.userRepository.delete(id);
 
     return user;
   }

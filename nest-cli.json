@@ -27,15 +27,6 @@
         "tsConfigPath": "apps/api-user/tsconfig.app.json"
       }
     },
-    "user": {
-      "type": "library",
-      "root": "libs/user",
-      "entryFile": "index",
-      "sourceRoot": "libs/user/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/user/tsconfig.lib.json"
-      }
-    },
     "config": {
       "type": "library",
       "root": "libs/config",
@@ -43,15 +34,6 @@
       "sourceRoot": "libs/config/src",
       "compilerOptions": {
         "tsConfigPath": "libs/config/tsconfig.lib.json"
-      }
-    },
-    "product": {
-      "type": "library",
-      "root": "libs/product",
-      "entryFile": "index",
-      "sourceRoot": "libs/product/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/product/tsconfig.lib.json"
       }
     }
   }

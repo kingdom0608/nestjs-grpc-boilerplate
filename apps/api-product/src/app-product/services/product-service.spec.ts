@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { ProductRepository } from '@app/product';
 import { generateTypeormModuleOptions } from '@app/config/typeorm-config';
+import { ProductService } from './product-service';
+import { ProductEntity } from '../entities';
 
-describe('productRepository', () => {
-  let productRepository: ProductRepository;
+describe('productService', () => {
+  let productService: ProductService;
   let app: TestingModule;
   let createdProduct;
   const testName = '맥북프로';
@@ -20,11 +21,12 @@ describe('productRepository', () => {
         TypeOrmModule.forRootAsync({
           useFactory: () => generateTypeormModuleOptions(),
         }),
+        TypeOrmModule.forFeature([ProductEntity]),
       ],
-      providers: [ProductRepository],
+      providers: [ProductService],
     }).compile();
 
-    productRepository = app.get<ProductRepository>(ProductRepository);
+    productService = app.get<ProductService>(ProductService);
   });
 
   afterAll(async () => {
@@ -32,7 +34,7 @@ describe('productRepository', () => {
   });
 
   it('createProduct', async () => {
-    const result = await productRepository.createProduct({
+    const result = await productService.createProduct({
       name: testName,
     });
     createdProduct = result;
@@ -41,13 +43,15 @@ describe('productRepository', () => {
   });
 
   it('getProductById', async () => {
-    const result = await productRepository.getProductById(createdProduct.id);
+    const result = await productService.getProductById({
+      id: createdProduct.id,
+    });
     // console.log(result);
     expect(result.name).toEqual(testName);
   });
 
   it('deleteProductById', async () => {
-    const result = await productRepository.deleteProductById(createdProduct.id);
+    const result = await productService.deleteProductById(createdProduct.id);
     // console.log(result);
     expect(result.name).toEqual(testName);
   });

@@ -18,24 +18,12 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/user": [
-        "libs/user/src"
-      ],
-      "@app/user/*": [
-        "libs/user/src/*"
-      ],
       "@app/config": [
         "libs/config/src"
       ],
       "@app/config/*": [
         "libs/config/src/*"
       ],
-      "@app/product": [
-        "libs/product/src"
-      ],
-      "@app/product/*": [
-        "libs/product/src/*"
-      ]
     }
   }
 }

@@ -1,8 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule } from '@nestjs/microservices';
-import { configureGrpc, parsedEnvFile } from '@app/config';
-import { UserController } from './controllers';
+import {
+  configureGrpc,
+  generateTypeormModuleOptions,
+  parsedEnvFile,
+} from '@app/config';
+import { UserEntity } from './entities';
+import { UserService } from './services';
 
 @Module({
   imports: [
@@ -10,6 +16,10 @@ import { UserController } from './controllers';
       isGlobal: true,
       envFilePath: parsedEnvFile(),
     }),
+    TypeOrmModule.forRootAsync({
+      useFactory: () => generateTypeormModuleOptions(),
+    }),
+    TypeOrmModule.forFeature([UserEntity]),
     ClientsModule.register([
       {
         name: 'USER_PACKAGE',
@@ -21,7 +31,7 @@ import { UserController } from './controllers';
       },
     ]),
   ],
-  controllers: [UserController],
+  controllers: [UserService],
   providers: [],
 })
-export class ApiUserModule {}
+export class AppUserModule {}

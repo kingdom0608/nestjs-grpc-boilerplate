@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { UserRepository } from '@app/user';
 import { generateTypeormModuleOptions } from '@app/config/typeorm-config';
+import { UserService } from './user-service';
+import { UserEntity } from '../entities';
 
-describe('userRepository', () => {
-  let userRepository: UserRepository;
+describe('UserService', () => {
+  let userService: UserService;
   let app: TestingModule;
   let createdUser;
   const testEmail = 'testemail@mausinsa.com';
@@ -20,11 +21,12 @@ describe('userRepository', () => {
         TypeOrmModule.forRootAsync({
           useFactory: () => generateTypeormModuleOptions(),
         }),
+        TypeOrmModule.forFeature([UserEntity]),
       ],
-      providers: [UserRepository],
+      providers: [UserService],
     }).compile();
 
-    userRepository = app.get<UserRepository>(UserRepository);
+    userService = app.get<UserService>(UserService);
   });
 
   afterAll(async () => {
@@ -32,7 +34,7 @@ describe('userRepository', () => {
   });
 
   it('createUser', async () => {
-    const result = await userRepository.createUser({
+    const result = await userService.createUser({
       email: testEmail,
       password: 'password',
     });
@@ -42,19 +44,21 @@ describe('userRepository', () => {
   });
 
   it('getUserById', async () => {
-    const result = await userRepository.getUserById(createdUser.id);
+    const result = await userService.getUserById(createdUser.id);
     // console.log(result);
     expect(result.email).toEqual(testEmail);
   });
 
   it('getUserByEmail', async () => {
-    const result = await userRepository.getUserByEmail(testEmail);
+    const result = await userService.getUserByEmail({
+      email: testEmail,
+    });
     // console.log(result);
     expect(result.email).toEqual(testEmail);
   });
 
   it('deleteUserById', async () => {
-    const result = await userRepository.deleteUserById(createdUser.id);
+    const result = await userService.deleteUserById(createdUser.id);
     // console.log(result);
     expect(result.email).toEqual(testEmail);
   });
