@@ -38,10 +38,10 @@ $ yarn install
 # app type
 app = ['user', 'product']
 
-# watch mode
+# local mode
 $ yarn start:loacal:api-${app}
 
-# development
+# development mode
 $ yarn start:dev:api-${app}
 
 # production mode
