@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { generateTypeormModuleOptions } from '@app/config/typeorm-config';
 import { UserService } from './user-service';
-import { UserRepository } from '../repositories';
 import { UserEntity } from '../entities';
 
 describe('UserService', () => {
