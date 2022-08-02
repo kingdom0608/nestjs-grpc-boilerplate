@@ -89,7 +89,6 @@
     ],
     "moduleNameMapper": {
       "^@app/product(|/.*)$": "<rootDir>/libs/product/src/$1",
-      "^@app/user(|/.*)$": "<rootDir>/libs/user/src/$1",
       "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1"
     }
   }

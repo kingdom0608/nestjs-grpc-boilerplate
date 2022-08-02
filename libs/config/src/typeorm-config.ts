@@ -11,6 +11,6 @@ export function generateTypeormModuleOptions(): TypeOrmModuleOptions {
     synchronize: false,
     keepConnectionAlive: true,
     autoLoadEntities: true,
-    logging: true,
+    logging: process.env.STAGE === 'local',
   };
 }
