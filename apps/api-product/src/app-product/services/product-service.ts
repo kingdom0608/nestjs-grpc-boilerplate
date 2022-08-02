@@ -1,29 +1,55 @@
-import { Controller } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductRepository } from '@app/product';
 import { GrpcMethod } from '@nestjs/microservices';
+import { Repository } from 'typeorm';
+import { ProductEntity } from '../entities';
 
-@Controller()
+@Injectable()
 export class ProductService {
   constructor(
-    @InjectRepository(ProductRepository)
-    private readonly productRepository: ProductRepository,
+    @InjectRepository(ProductEntity)
+    private readonly productRepository: Repository<ProductEntity>,
   ) {}
+
+  /**
+   * 상품 생성
+   * @param productData
+   * @return Promise<ProductEntity>
+   */
+  async createProduct(productData: { name: string }): Promise<ProductEntity> {
+    return await this.productRepository.save({
+      name: productData.name,
+      status: 'ACTIVE',
+    });
+  }
 
   /**
    * 상품 아이디 조회
    * @param id
+   * @return Promise<ProductEntity>
    */
   @GrpcMethod('ProductService', 'GetProductById')
-  async getProductById({ id: id }) {
-    const product = await this.productRepository.getProductById(id);
+  async getProductById({ id: id }): Promise<ProductEntity> {
+    return await this.productRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+  }
 
-    return {
-      id: product.id,
-      name: product.name,
-      status: product.status,
-      createdDate: product.createdDate,
-      updatedDate: product.updatedDate,
-    };
+  /**
+   * 상품 삭제
+   * @param id
+   * @return Promise<ProductEntity>
+   */
+  async deleteProductById(id: number): Promise<ProductEntity> {
+    const product = await this.getProductById({
+      id: id,
+    });
+
+    /** 상품 삭제 */
+    await this.productRepository.delete(id);
+
+    return product;
   }
 }

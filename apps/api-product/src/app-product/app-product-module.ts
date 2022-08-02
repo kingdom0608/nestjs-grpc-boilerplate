@@ -3,8 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule } from '@nestjs/microservices';
 import { configureGrpc, generateTypeormModuleOptions } from '@app/config';
-import { ProductModule } from '@app/product';
 import { ProductService } from './services';
+import { ProductEntity } from './entities';
 
 /**
  * 환경변수 파일 파싱
@@ -33,13 +33,13 @@ function parsedEnvFile() {
     TypeOrmModule.forRootAsync({
       useFactory: () => generateTypeormModuleOptions(),
     }),
+    TypeOrmModule.forFeature([ProductEntity]),
     ClientsModule.register([
       {
         name: 'PRODUCT_PACKAGE',
         ...configureGrpc('product', 'product'),
       },
     ]),
-    ProductModule,
   ],
   controllers: [ProductService],
   providers: [],
