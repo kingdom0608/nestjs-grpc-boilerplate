@@ -32,7 +32,7 @@
 $ yarn install
 ```
 
-## Running the app api-app
+## Running the app
 
 ```bash
 # app type
@@ -47,6 +47,14 @@ $ yarn start:dev:api-${app}
 # production mode
 $ yarn start:prod:api-${app}
 ```
+
+## Running the swagger
+
+### api-user
+- http://localhost:3000/api-user/0.0.1/docs#
+
+### api-product
+- http://localhost:3001/api-product/0.0.1/docs#
 
 ## Support
 
