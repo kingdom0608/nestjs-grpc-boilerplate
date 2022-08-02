@@ -32,17 +32,20 @@
 $ yarn install
 ```
 
-## Running the app api-user
+## Running the app api-app
 
 ```bash
+# app type
+app = ['user', 'product']
+
 # watch mode
-$ yarn start:loacal:api-user
+$ yarn start:loacal:api-${app}
 
 # development
-$ yarn start:dev:api-user
+$ yarn start:dev:api-${app}
 
 # production mode
-$ yarn start:prod:api-user
+$ yarn start:prod:api-${app}
 ```
 
 ## Support
