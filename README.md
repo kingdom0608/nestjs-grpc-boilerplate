@@ -39,7 +39,7 @@ $ yarn install
 app = ['user', 'product']
 
 # local mode
-$ yarn start:loacal:api-${app}
+$ yarn start:local:api-${app}
 
 # development mode
 $ yarn start:dev:api-${app}
