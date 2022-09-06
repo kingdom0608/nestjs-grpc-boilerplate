@@ -9,22 +9,22 @@
     "tsConfigPath": "apps/nestjs-boilerplate/tsconfig.app.json"
   },
   "projects": {
-     "api-product": {
+     "app-product": {
       "type": "application",
-      "root": "apps/api-product",
+      "root": "apps/app-product",
       "entryFile": "main",
-      "sourceRoot": "apps/api-product/src",
+      "sourceRoot": "apps/app-product/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/api-product/tsconfig.app.json"
+        "tsConfigPath": "apps/app-product/tsconfig.app.json"
       }
     },
-    "api-user": {
+    "app-user": {
       "type": "application",
-      "root": "apps/api-user",
+      "root": "apps/app-user",
       "entryFile": "main",
-      "sourceRoot": "apps/api-user/src",
+      "sourceRoot": "apps/app-user/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/api-user/tsconfig.app.json"
+        "tsConfigPath": "apps/app-user/tsconfig.app.json"
       }
     },
     "config": {

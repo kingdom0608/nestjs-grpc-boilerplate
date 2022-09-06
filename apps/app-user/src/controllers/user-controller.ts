@@ -28,7 +28,7 @@ import {
   UnauthorizedType,
   UserType,
 } from '../user/types';
-import { ProductService } from '../../../api-product/src/product/services';
+import { ProductService } from '../../../app-product/src/product/services';
 
 @ApiTags('유저')
 @ApiResponse({

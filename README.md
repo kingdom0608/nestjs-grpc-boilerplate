@@ -36,25 +36,25 @@ $ yarn install
 
 ```bash
 # app type
-app = ['user', 'product']
+apps = ['user', 'product']
 
 # local mode
-$ yarn start:local:api-${app}
+$ yarn start:local:app-${apps}
 
 # development mode
-$ yarn start:dev:api-${app}
+$ yarn start:dev:app-${apps}
 
 # production mode
-$ yarn start:prod:api-${app}
+$ yarn start:prod:app-${apps}
 ```
 
 ## Running the swagger
 
-### api-user
-- http://localhost:3000/api-user/0.0.1/docs#
+### app-user
+- http://localhost:3000/app-user/0.0.1/docs#
 
-### api-product
-- http://localhost:3001/api-product/0.0.1/docs#
+### app-product
+- http://localhost:3001/app-product/0.0.1/docs#
 
 ## Support
 

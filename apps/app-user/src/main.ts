@@ -3,13 +3,13 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { HttpException, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { configureGrpc } from '@app/config';
-import { ApiUserModule } from './api-user-module';
+import { AppUserModule } from './app-user-module';
 import { UserModule } from './user/user-module';
 import { setupSwagger } from '../../../swagger';
 
 async function bootstrap() {
   const port = 3000;
-  const app = await NestFactory.create<NestExpressApplication>(ApiUserModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppUserModule, {
     cors: true,
   });
   const userApp = await NestFactory.createMicroservice<MicroserviceOptions>(
