@@ -4,7 +4,7 @@ import { HttpException, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { configureGrpc } from '@app/config';
 import { ApiProductModule } from './api-product-module';
-import { AppProductModule } from './app-product/app-product-module';
+import { ProductModule } from './product/product-module';
 import { setupSwagger } from '../../../swagger';
 
 async function bootstrap() {
@@ -16,7 +16,7 @@ async function bootstrap() {
     },
   );
   const productApp = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppProductModule,
+    ProductModule,
     {
       ...configureGrpc('product', 'product'),
     },
@@ -25,7 +25,7 @@ async function bootstrap() {
   setupSwagger(app, 'product');
   app.useGlobalPipes(
     new ValidationPipe({
-      exceptionFactory: (errors) => {
+      exceptionFactory: () => {
         throw new HttpException(
           {
             status: HttpStatus.BAD_REQUEST,

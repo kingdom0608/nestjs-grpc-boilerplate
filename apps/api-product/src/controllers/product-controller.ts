@@ -15,7 +15,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { ProductService } from '../app-product/services';
+import { ProductService } from '../product/services';
 import { Request, Response } from 'express';
 import {
   BadRequestType,
@@ -25,7 +25,7 @@ import {
   ServerErrorType,
   UnauthorizedType,
   ProductType,
-} from '../app-product/types';
+} from '../product/types';
 import { ClientGrpc } from '@nestjs/microservices';
 
 @ApiTags('상품')

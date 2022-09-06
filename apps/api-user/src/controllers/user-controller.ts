@@ -18,7 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Request, Response } from 'express';
-import { UserService } from '../app-user/services';
+import { UserService } from '../user/services';
 import {
   BadRequestType,
   ConflictType,
@@ -27,8 +27,8 @@ import {
   ServerErrorType,
   UnauthorizedType,
   UserType,
-} from '../app-user/types';
-import { ProductService } from '../../../api-product/src/app-product/services';
+} from '../user/types';
+import { ProductService } from '../../../api-product/src/product/services';
 
 @ApiTags('유저')
 @ApiResponse({

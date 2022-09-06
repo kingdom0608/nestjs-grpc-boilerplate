@@ -30,4 +30,4 @@ import { ProductEntity } from './entities';
   controllers: [ProductService],
   providers: [],
 })
-export class AppProductModule {}
+export class ProductModule {}

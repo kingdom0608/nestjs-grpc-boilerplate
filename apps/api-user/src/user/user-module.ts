@@ -34,4 +34,4 @@ import { UserService } from './services';
   controllers: [UserService],
   providers: [],
 })
-export class AppUserModule {}
+export class UserModule {}
