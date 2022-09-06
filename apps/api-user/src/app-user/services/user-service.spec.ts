@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { faker } from '@faker-js/faker';
 import { generateTypeormModuleOptions } from '@app/config/typeorm-config';
 import { UserService } from './user-service';
 import { UserEntity } from '../entities';
@@ -9,7 +10,8 @@ describe('UserService', () => {
   let userService: UserService;
   let app: TestingModule;
   let createdUser;
-  const testEmail = 'testemail@mausinsa.com';
+  const testEmail = faker.internet.email();
+  const testPassword = faker.internet.password();
 
   beforeAll(async () => {
     app = await Test.createTestingModule({
@@ -36,7 +38,7 @@ describe('UserService', () => {
   it('createUser', async () => {
     const result = await userService.createUser({
       email: testEmail,
-      password: 'password',
+      password: testPassword,
     });
     createdUser = result;
     // console.log(result);

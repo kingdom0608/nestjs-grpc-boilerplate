@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { faker } from '@faker-js/faker';
 import { generateTypeormModuleOptions } from '@app/config/typeorm-config';
 import { ProductService } from './product-service';
 import { ProductEntity } from '../entities';
@@ -9,7 +10,7 @@ describe('productService', () => {
   let productService: ProductService;
   let app: TestingModule;
   let createdProduct;
-  const testName = '맥북프로';
+  const testName = faker.internet.userName();
 
   beforeAll(async () => {
     app = await Test.createTestingModule({

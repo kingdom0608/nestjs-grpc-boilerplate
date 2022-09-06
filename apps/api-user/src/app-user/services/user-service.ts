@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { GrpcMethod } from '@nestjs/microservices';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../entities';
-import { GrpcMethod } from '@nestjs/microservices';
 
 @Injectable()
 export class UserService {
