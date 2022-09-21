@@ -24,6 +24,12 @@
       "@app/config/*": [
         "libs/config/src/*"
       ],
+      "@app/lib-util": [
+        "libs/lib-util/src"
+      ],
+      "@app/lib-util/*": [
+        "libs/lib-util/src/*"
+      ]
     }
   }
 }
