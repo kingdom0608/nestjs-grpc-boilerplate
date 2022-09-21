@@ -29,11 +29,11 @@
     },
     "config": {
       "type": "library",
-      "root": "libs/config",
+      "root": "libs/lib-config",
       "entryFile": "index",
-      "sourceRoot": "libs/config/src",
+      "sourceRoot": "libs/lib-config/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/config/tsconfig.lib.json"
+        "tsConfigPath": "libs/lib-config/tsconfig.lib.json"
       }
     },
     "lib-util": {
