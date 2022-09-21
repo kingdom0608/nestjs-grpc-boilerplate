@@ -1,2 +1,2 @@
 export * from './lib-util.module';
-export * from './lib-util.service';
+export * from './encrypt-util';
