@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GrpcMethod } from '@nestjs/microservices';
+import { EncryptUtil } from '@app/util';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../entities';
 
@@ -9,6 +10,7 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly encryptUtil: EncryptUtil,
   ) {}
 
   /**
@@ -22,7 +24,7 @@ export class UserService {
   }): Promise<UserEntity> {
     return this.userRepository.save({
       email: userData.email,
-      password: userData.password,
+      password: this.encryptUtil.encryptForPassword(userData.password),
       status: 'ACTIVE',
     });
   }

@@ -1,6 +1,5 @@
 import * as CryptoJS from 'crypto-js';
 import * as pbkdf2 from 'pbkdf2';
-import * as bcrypt from 'bcrypt';
 
 export class EncryptUtil {
   /** salt 값 */
@@ -23,11 +22,11 @@ export class EncryptUtil {
   }
 
   /**
-   * hash 값 생성
+   * 비밀번호 암호화
    * @return string
    * @param plainText
    */
-  createHash(plainText: string): string {
+  encryptForPassword(plainText: string): string {
     const derivedKey = pbkdf2.pbkdf2Sync(
       plainText,
       this.salt,
@@ -40,20 +39,20 @@ export class EncryptUtil {
 
   /**
    * 암호화
-   * @param text
+   * @param plainText
    * @return string
    */
-  encrypt(text: string) {
-    return CryptoJS.AES.encrypt(text, this.salt).toString();
+  encrypt(plainText: string) {
+    return CryptoJS.AES.encrypt(plainText, this.salt).toString();
   }
 
   /**
    * 복호화
-   * @param text
+   * @param encryptText
    * @return string
    */
-  decrypt(text: string) {
-    const bytes = CryptoJS.AES.decrypt(text.toString(), this.salt);
+  decrypt(encryptText: string) {
+    const bytes = CryptoJS.AES.decrypt(encryptText.toString(), this.salt);
     return bytes.toString(CryptoJS.enc.Utf8);
   }
 }

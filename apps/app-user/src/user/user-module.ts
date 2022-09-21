@@ -7,6 +7,7 @@ import {
   generateTypeormModuleOptions,
   parsedEnvFile,
 } from '@app/config';
+import { UtilModule } from '@app/util';
 import { UserEntity } from './entities';
 import { UserService } from './services';
 
@@ -30,6 +31,7 @@ import { UserService } from './services';
         ...configureGrpc('product', 'product'),
       },
     ]),
+    UtilModule,
   ],
   controllers: [UserService],
   providers: [],

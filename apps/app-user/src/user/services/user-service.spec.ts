@@ -5,6 +5,7 @@ import { faker } from '@faker-js/faker';
 import { generateTypeormModuleOptions } from '@app/config/typeorm-config';
 import { UserService } from './user-service';
 import { UserEntity } from '../entities';
+import { UtilModule } from '@app/util';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -24,6 +25,7 @@ describe('UserService', () => {
           useFactory: () => generateTypeormModuleOptions(),
         }),
         TypeOrmModule.forFeature([UserEntity]),
+        UtilModule,
       ],
       providers: [UserService],
     }).compile();

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EncryptUtil } from '@app/util/encrypt-util';
 import { ConfigModule } from '@nestjs/config';
+import { EncryptUtil } from '@app/util/encrypt-util';
 
 describe('encryptUtil', () => {
   let encryptUtil: EncryptUtil;
@@ -22,8 +22,8 @@ describe('encryptUtil', () => {
     encryptUtil = app.get<EncryptUtil>(EncryptUtil);
   });
 
-  it('createHash', () => {
-    const result = encryptUtil.createHash('encryptPassword');
+  it('encryptForPassword', () => {
+    const result = encryptUtil.encryptForPassword('encryptPassword');
     // console.log(result);
     expect(result).toEqual('b75e2e4a5a57995973d830f525360dbc34859295');
   });
