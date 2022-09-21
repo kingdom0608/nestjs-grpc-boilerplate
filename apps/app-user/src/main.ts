@@ -3,29 +3,26 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { HttpException, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { configureGrpc } from '@app/config';
-import { ApiProductModule } from './api-product-module';
-import { AppProductModule } from './app-product/app-product-module';
+import { AppUserModule } from './app-user-module';
+import { UserModule } from './user/user-module';
 import { setupSwagger } from '../../../swagger';
 
 async function bootstrap() {
-  const port = process.env.STAGE === 'prod' ? 3000 : 3001;
-  const app = await NestFactory.create<NestExpressApplication>(
-    ApiProductModule,
+  const port = 3000;
+  const app = await NestFactory.create<NestExpressApplication>(AppUserModule, {
+    cors: true,
+  });
+  const userApp = await NestFactory.createMicroservice<MicroserviceOptions>(
+    UserModule,
     {
-      cors: true,
-    },
-  );
-  const productApp = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppProductModule,
-    {
-      ...configureGrpc('product', 'product'),
+      ...configureGrpc('user', 'user'),
     },
   );
 
-  setupSwagger(app, 'product');
+  setupSwagger(app, 'user');
   app.useGlobalPipes(
     new ValidationPipe({
-      exceptionFactory: (errors) => {
+      exceptionFactory: () => {
         throw new HttpException(
           {
             status: HttpStatus.BAD_REQUEST,
@@ -44,7 +41,7 @@ async function bootstrap() {
   });
 
   await app.listen(port);
-  await productApp.listen();
+  await userApp.listen();
 
   console.log(`🚀 server ready at http://localhost:${port} 🚀`);
 }

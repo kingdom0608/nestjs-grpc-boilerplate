@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Inject,
+  OnModuleInit,
   Param,
   Req,
   Res,
@@ -15,8 +16,9 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { ProductService } from '../app-product/services';
+import { ClientGrpc } from '@nestjs/microservices';
 import { Request, Response } from 'express';
+import { UserService } from '../user/services';
 import {
   BadRequestType,
   ConflictType,
@@ -24,11 +26,11 @@ import {
   NotFoundType,
   ServerErrorType,
   UnauthorizedType,
-  ProductType,
-} from '../app-product/types';
-import { ClientGrpc } from '@nestjs/microservices';
+  UserType,
+} from '../user/types';
+import { ProductService } from '../../../app-product/src/product/services';
 
-@ApiTags('상품')
+@ApiTags('유저')
 @ApiResponse({
   status: HttpStatus.BAD_REQUEST,
   type: BadRequestType,
@@ -54,41 +56,53 @@ import { ClientGrpc } from '@nestjs/microservices';
   type: ServerErrorType,
 })
 @Controller()
-export class ProductController {
+export class UserController implements OnModuleInit {
+  private userService;
   private productService;
 
-  constructor(@Inject('PRODUCT_PACKAGE') private readonly client: ClientGrpc) {}
+  constructor(
+    @Inject('USER_PACKAGE') private readonly client: ClientGrpc,
+    @Inject('PRODUCT_PACKAGE') private readonly productClient: ClientGrpc,
+  ) {}
 
   onModuleInit() {
+    this.userService = this.client.getService<UserService>('UserService');
     this.productService =
-      this.client.getService<ProductService>('ProductService');
+      this.productClient.getService<ProductService>('ProductService');
   }
 
-  @ApiOperation({ summary: '상품 아이디 조회' })
-  @ApiOkResponse({ type: ProductType })
+  @ApiOperation({ summary: '유저 이메일 조회' })
+  @ApiOkResponse({ type: UserType })
   @ApiParam({
-    name: 'id',
+    name: 'email',
     required: true,
-    description: '아이디',
+    description: '이메일',
   })
-  @Get('/product/:id')
-  async getProductById(
-    @Param('id') id: number,
+  @Get('/users/:email')
+  async getUserByEmail(
+    @Param('email') email: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {
     try {
-      const product = await this.productService
-        .getProductById({
-          id: id,
+      const user = await this.userService
+        .getUserByEmail({
+          email: email,
         })
         .toPromise();
+
+      /** product gRPC 통신 부분 */
+      // await this.productService
+      //   .getProductById({
+      //     id: 2, // 테스트 위한 고정 값
+      //   })
+      //   .toPromise();
 
       return res.json({
         result: 'ok',
         status: HttpStatus.OK,
         data: {
-          product: product,
+          user: user,
         },
       });
     } catch (err) {
@@ -102,6 +116,8 @@ export class ProductController {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
+
+      throw err;
     }
   }
 }
