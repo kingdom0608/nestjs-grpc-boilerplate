@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule } from '@nestjs/microservices';
-import { configureGrpc, parsedEnvFile } from '@app/config';
+import { configureGrpc, parsedEnvFile } from '@app/lib-config';
 import { UserController } from './controllers';
 
 @Module({

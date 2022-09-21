@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { faker } from '@faker-js/faker';
-import { generateTypeormModuleOptions } from '@app/config/typeorm-config';
+import { generateTypeormModuleOptions } from '@app/lib-config/typeorm-config';
 import { ProductService } from './product-service';
 import { ProductEntity } from '../entities';
 

@@ -9,7 +9,7 @@
     "tsConfigPath": "apps/nestjs-boilerplate/tsconfig.app.json"
   },
   "projects": {
-     "app-product": {
+    "app-product": {
       "type": "application",
       "root": "apps/app-product",
       "entryFile": "main",
@@ -29,11 +29,20 @@
     },
     "config": {
       "type": "library",
-      "root": "libs/config",
+      "root": "libs/lib-config",
       "entryFile": "index",
-      "sourceRoot": "libs/config/src",
+      "sourceRoot": "libs/lib-config/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/config/tsconfig.lib.json"
+        "tsConfigPath": "libs/lib-config/tsconfig.lib.json"
+      }
+    },
+    "lib-util": {
+      "type": "library",
+      "root": "libs/lib-util",
+      "entryFile": "index",
+      "sourceRoot": "libs/lib-util/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/lib-util/tsconfig.lib.json"
       }
     }
   }

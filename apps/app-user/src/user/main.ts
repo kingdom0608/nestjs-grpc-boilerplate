@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions } from '@nestjs/microservices';
-import { configureGrpc } from '@app/config';
+import { configureGrpc } from '@app/lib-config';
 import { UserModule } from './user-module';
 
 async function bootstrap() {

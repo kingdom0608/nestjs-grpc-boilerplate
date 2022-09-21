@@ -37,6 +37,8 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.0.4",
     "@nestjs/typeorm": "^9.0.0",
+    "@types/bcrypt": "^5.0.0",
+    "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "mysql": "^2.18.1",
@@ -89,7 +91,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1"
+      "^@app/lib-config(|/.*)$": "<rootDir>/libs/lib-config/src/$1",
+      "^@app/lib-util(|/.*)$": "<rootDir>/libs/lib-util/src/$1"
     }
   }
 }
