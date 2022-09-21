@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { configureGrpc, parsedEnvFile } from '@app/lib-config';
+import { configureGrpc, parsedEnvFile } from '@app/config';
 import { ProductController } from './controllers';
 import { ClientsModule } from '@nestjs/microservices';
 

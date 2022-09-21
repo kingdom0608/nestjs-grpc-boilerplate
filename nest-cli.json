@@ -29,20 +29,20 @@
     },
     "config": {
       "type": "library",
-      "root": "libs/lib-config",
+      "root": "libs/config",
       "entryFile": "index",
-      "sourceRoot": "libs/lib-config/src",
+      "sourceRoot": "libs/config/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/lib-config/tsconfig.lib.json"
+        "tsConfigPath": "libs/config/tsconfig.lib.json"
       }
     },
-    "lib-util": {
+    "util": {
       "type": "library",
-      "root": "libs/lib-util",
+      "root": "libs/util",
       "entryFile": "index",
-      "sourceRoot": "libs/lib-util/src",
+      "sourceRoot": "libs/util/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/lib-util/tsconfig.lib.json"
+        "tsConfigPath": "libs/util/tsconfig.lib.json"
       }
     }
   }

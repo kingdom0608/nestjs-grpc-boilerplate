@@ -4,4 +4,4 @@ import { Module } from '@nestjs/common';
   providers: [],
   exports: [],
 })
-export class LibUtilModule {}
+export class UtilModule {}

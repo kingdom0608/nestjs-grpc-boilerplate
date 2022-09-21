@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EncryptUtil } from '@app/lib-util/encrypt-util';
+import { EncryptUtil } from '@app/util/encrypt-util';
 import { ConfigModule } from '@nestjs/config';
 
 describe('encryptUtil', () => {

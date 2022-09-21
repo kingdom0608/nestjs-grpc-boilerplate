@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { HttpException, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions } from '@nestjs/microservices';
-import { configureGrpc } from '@app/lib-config';
+import { configureGrpc } from '@app/config';
 import { AppProductModule } from './app-product-module';
 import { ProductModule } from './product/product-module';
 import { setupSwagger } from '../../../swagger';

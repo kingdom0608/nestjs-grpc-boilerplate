@@ -6,7 +6,7 @@ import {
   configureGrpc,
   generateTypeormModuleOptions,
   parsedEnvFile,
-} from '@app/lib-config';
+} from '@app/config';
 import { ProductService } from './services';
 import { ProductEntity } from './entities';
 
