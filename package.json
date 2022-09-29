@@ -42,12 +42,14 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "crypto-js": "^4.1.1",
+    "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
     "pbkdf2": "^3.1.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.2.45"
+    "typeorm": "^0.2.45",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -94,7 +96,8 @@
     ],
     "moduleNameMapper": {
       "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1",
-      "^@app/util(|/.*)$": "<rootDir>/libs/util/src/$1"
+      "^@app/util(|/.*)$": "<rootDir>/libs/util/src/$1",
+      "^@app/authentication(|/.*)$": "<rootDir>/libs/authentication/src/$1"
     }
   }
 }

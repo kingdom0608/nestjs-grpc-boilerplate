@@ -61,12 +61,12 @@ export class UserController implements OnModuleInit {
   private productService;
 
   constructor(
-    @Inject('USER_PACKAGE') private readonly client: ClientGrpc,
+    @Inject('USER_PACKAGE') private readonly userClient: ClientGrpc,
     @Inject('PRODUCT_PACKAGE') private readonly productClient: ClientGrpc,
   ) {}
 
   onModuleInit() {
-    this.userService = this.client.getService<UserService>('UserService');
+    this.userService = this.userClient.getService<UserService>('UserService');
     this.productService =
       this.productClient.getService<ProductService>('ProductService');
   }

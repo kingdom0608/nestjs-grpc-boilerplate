@@ -29,6 +29,12 @@
       ],
       "@app/util/*": [
         "libs/util/src/*"
+      ],
+      "@app/authentication": [
+        "libs/authentication/src"
+      ],
+      "@app/authentication/*": [
+        "libs/authentication/src/*"
       ]
     }
   }
