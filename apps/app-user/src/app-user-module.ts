@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule } from '@nestjs/microservices';
 import { configureGrpc, parsedEnvFile } from '@app/config';
-import { UserController } from './controllers';
+import { AuthenticationModule } from '@app/authentication';
+import { UserController, UserSignController } from './controllers';
 
 @Module({
   imports: [
@@ -20,8 +21,9 @@ import { UserController } from './controllers';
         ...configureGrpc('product', 'product'),
       },
     ]),
+    AuthenticationModule,
   ],
-  controllers: [UserController],
+  controllers: [UserController, UserSignController],
   providers: [],
 })
 export class AppUserModule {}

@@ -3,14 +3,21 @@ syntax = "proto3";
 package user;
 
 service UserService {
-  rpc GetUserByEmail (UserRequest) returns (User);
+  rpc GetUserByEmail (UserByEmailRequest) returns (UserResponse);
+  rpc GetUserByEmailPassword (UserByEmailPasswordRequest) returns (UserResponse);
+  rpc GetActiveUserByEmail (UserByEmailRequest) returns (UserResponse);
 }
 
-message UserRequest {
+message UserByEmailRequest {
   string email = 1;
 }
 
-message User {
+message UserByEmailPasswordRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message UserResponse {
   int32 id = 1;
   string email = 2;
   string status = 3;

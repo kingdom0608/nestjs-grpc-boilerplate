@@ -55,6 +55,34 @@ export class UserService {
   }
 
   /**
+   * 유저 이메일&비밀번호 조회
+   * @param email
+   * @param password
+   */
+  @GrpcMethod('UserService', 'GetUserByEmailPassword')
+  async getUserByEmailPassword({
+    email: email,
+    password: password,
+  }): Promise<UserEntity> {
+    return await this.userRepository.findOne({
+      email: email,
+      password: this.encryptUtil.encryptForPassword(password),
+    });
+  }
+
+  /**
+   * 활성 유저 이메일 조회
+   * @param email
+   */
+  @GrpcMethod('UserService', 'GetActiveUserByEmail')
+  async getActiveUserByEmail({ email: email }): Promise<UserEntity> {
+    return await this.userRepository.findOne({
+      email: email,
+      status: 'ACTIVE',
+    });
+  }
+
+  /**
    * 유저 삭제
    * @param id
    * @return Promise<UserEntity>

@@ -26,7 +26,7 @@ import {
   NotFoundType,
   ServerErrorType,
   UnauthorizedType,
-  UserType,
+  UserResponseType,
 } from '../user/types';
 import { ProductService } from '../../../app-product/src/product/services';
 
@@ -72,13 +72,13 @@ export class UserController implements OnModuleInit {
   }
 
   @ApiOperation({ summary: '유저 이메일 조회' })
-  @ApiOkResponse({ type: UserType })
+  @ApiOkResponse({ type: UserResponseType })
   @ApiParam({
     name: 'email',
     required: true,
     description: '이메일',
   })
-  @Get('/users/:email')
+  @Get('/user/emails/:email')
   async getUserByEmail(
     @Param('email') email: string,
     @Req() req: Request,
