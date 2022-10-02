@@ -16,6 +16,10 @@ export function setupSwagger(app: INestApplication, domain: TDomain) {
     .setTitle(`NestJS Boilerplate APP-${domain.toUpperCase()} Server`)
     .setDescription(`NestJS Boilerplate APP-${domain.toUpperCase()} 서버`)
     .setVersion(`${packageJsonData.version}`)
+    .addApiKey(
+      { type: 'apiKey', in: 'header', name: 'x-access-token' },
+      'authentication',
+    )
     .build();
 
   const customOptions: SwaggerCustomOptions = {

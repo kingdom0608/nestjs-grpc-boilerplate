@@ -8,8 +8,10 @@ import {
   Param,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -17,6 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ClientGrpc } from '@nestjs/microservices';
+import { AuthenticationGuard } from '@app/authentication';
 import { Request, Response } from 'express';
 import { UserService } from '../user/services';
 import {
@@ -73,11 +76,13 @@ export class UserController implements OnModuleInit {
 
   @ApiOperation({ summary: '유저 이메일 조회' })
   @ApiOkResponse({ type: UserResponseType })
+  @ApiBearerAuth('authentication')
   @ApiParam({
     name: 'email',
     required: true,
     description: '이메일',
   })
+  @UseGuards(AuthenticationGuard)
   @Get('/user/emails/:email')
   async getUserByEmail(
     @Param('email') email: string,

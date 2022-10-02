@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthenticationService } from './authentication-service';
+import { AuthenticationStrategy } from './authentication-strategy';
 import { ConfigModule } from '@nestjs/config';
 
-describe('AuthenticationService', () => {
-  let authenticationService: AuthenticationService;
+describe('AuthenticationStrategy', () => {
+  let authenticationStrategy: AuthenticationStrategy;
   let issuedToken;
   const userId = 1;
 
@@ -15,16 +15,16 @@ describe('AuthenticationService', () => {
           envFilePath: 'env/test.env',
         }),
       ],
-      providers: [AuthenticationService],
+      providers: [AuthenticationStrategy],
     }).compile();
 
-    authenticationService = module.get<AuthenticationService>(
-      AuthenticationService,
+    authenticationStrategy = module.get<AuthenticationStrategy>(
+      AuthenticationStrategy,
     );
   });
 
   it('issueToken', async () => {
-    const result = await authenticationService.issueToken(userId);
+    const result = await authenticationStrategy.issueToken(userId);
     // console.log(result);
     issuedToken = result;
     expect(result.visitorData).toEqual({
@@ -34,7 +34,7 @@ describe('AuthenticationService', () => {
   });
 
   it('decodeToken', () => {
-    const result = authenticationService.decodeToken(issuedToken.accessToken);
+    const result = authenticationStrategy.decodeToken(issuedToken.accessToken);
     // console.log(result);
     expect(result).toEqual({
       key: issuedToken.key,

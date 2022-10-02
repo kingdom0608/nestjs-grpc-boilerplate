@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UnauthenticatedException } from '@app/authentication/authentication-error-service';
+import { UnauthenticatedException } from '@app/authentication/authentication-error';
 import { Algorithm, sign, verify } from 'jsonwebtoken';
 import { v4 as uuidV4 } from 'uuid';
 import * as crypto from 'crypto';
 
 @Injectable()
-export class AuthenticationService {
+export class AuthenticationStrategy {
   private readonly aesCipherAlgorithm = 'aes-256-cbc';
   private readonly jwtAlgorithm: Algorithm = 'HS256';
   private readonly aesIV;

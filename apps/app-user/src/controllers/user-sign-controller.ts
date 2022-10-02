@@ -32,7 +32,7 @@ import {
   GrpcUserNotFoundException,
   GrpcUserPasswordWrongException,
 } from '../user/exceptions';
-import { AuthenticationService } from '@app/authentication';
+import { AuthenticationStrategy } from '@app/authentication';
 
 @ApiTags('유저 회원')
 @ApiResponse({
@@ -65,7 +65,7 @@ export class UserSignController implements OnModuleInit {
 
   constructor(
     @Inject('USER_PACKAGE') private readonly userClient: ClientGrpc,
-    private readonly authenticationService: AuthenticationService,
+    private readonly authenticationStrategy: AuthenticationStrategy,
   ) {}
 
   onModuleInit() {
@@ -112,7 +112,7 @@ export class UserSignController implements OnModuleInit {
           }
         });
 
-      const issueToken = await this.authenticationService.issueToken(user.id);
+      const issueToken = await this.authenticationStrategy.issueToken(user.id);
 
       return res.json({
         result: 'ok',
