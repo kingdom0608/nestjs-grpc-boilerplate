@@ -24,7 +24,7 @@ import {
   UnauthorizedType,
   UserSignInInputType,
   UserSignResponseType,
-} from '../user/types';
+} from './types';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Request, Response } from 'express';
 import { UserService } from '../user/services';

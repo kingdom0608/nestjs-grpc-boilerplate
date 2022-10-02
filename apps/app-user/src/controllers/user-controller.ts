@@ -30,7 +30,7 @@ import {
   ServerErrorType,
   UnauthorizedType,
   UserResponseType,
-} from '../user/types';
+} from './types';
 import { ProductService } from '../../../app-product/src/product/services';
 
 @ApiTags('유저')
