@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ProductType {
+export class ProductResponseType {
   @ApiProperty({ type: Number, description: '아이디' })
   readonly id: number;
 

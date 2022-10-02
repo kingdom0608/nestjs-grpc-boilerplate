@@ -24,7 +24,7 @@ import {
   NotFoundType,
   ServerErrorType,
   UnauthorizedType,
-  ProductType,
+  ProductResponseType,
 } from '../product/types';
 import { ClientGrpc } from '@nestjs/microservices';
 
@@ -65,7 +65,7 @@ export class ProductController {
   }
 
   @ApiOperation({ summary: '상품 아이디 조회' })
-  @ApiOkResponse({ type: ProductType })
+  @ApiOkResponse({ type: ProductResponseType })
   @ApiParam({
     name: 'id',
     required: true,
