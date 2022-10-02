@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { AuthenticationStrategy } from '@app/authentication/authentication-strategy';
+import { AuthenticationStrategy } from '@app/authentication/strategies';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {

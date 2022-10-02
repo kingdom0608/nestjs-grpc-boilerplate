@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AuthenticationGuard } from './authentication-guard';
-import { AuthenticationStrategy } from './authentication-strategy';
+import { AuthenticationStrategy } from '@app/authentication/strategies';
+import { AuthenticationGuard } from '@app/authentication/guards';
 
 @Module({
   providers: [AuthenticationStrategy, AuthenticationGuard],

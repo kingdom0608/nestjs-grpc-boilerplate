@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UnauthenticatedException } from '@app/authentication/authentication-error';
+import { UnauthenticatedException } from '@app/authentication/exceptions';
 import { Algorithm, sign, verify } from 'jsonwebtoken';
 import { v4 as uuidV4 } from 'uuid';
 import * as crypto from 'crypto';
