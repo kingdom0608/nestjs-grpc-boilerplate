@@ -11,9 +11,14 @@ export class AuthenticationGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     /** 권한 조회 */
-    await this.authenticationStrategy.decodeToken(
+    const decodeToken = await this.authenticationStrategy.decodeToken(
       request.headers['x-access-token'],
     );
+
+    /** 헤더에 유저 아이디 입력 */
+    request.user = {
+      id: decodeToken.userId,
+    };
 
     return true;
   }
