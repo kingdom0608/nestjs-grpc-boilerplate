@@ -22,13 +22,16 @@ import {
   NotFoundType,
   ServerErrorType,
   UnauthorizedType,
+  UserResponseType,
   UserSignInInputType,
   UserSignResponseType,
+  UserSignUpInputType,
 } from './types';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Request, Response } from 'express';
 import { UserService } from '../user/services';
 import {
+  GrpcUserExistException,
   GrpcUserNotFoundException,
   GrpcUserPasswordWrongException,
 } from '../user/exceptions';
@@ -70,6 +73,69 @@ export class UserSignController implements OnModuleInit {
 
   onModuleInit() {
     this.userService = this.userClient.getService<UserService>('UserService');
+  }
+
+  @ApiOperation({ summary: '유저 기본 회원가입' })
+  @ApiOkResponse({ type: UserResponseType })
+  @Post('/user/signUp/basic')
+  async signUpForBasic(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() dto: UserSignUpInputType,
+  ) {
+    try {
+      const { email, password } = dto;
+
+      /** 유저 존재 여부 확인 */
+      const isExistUser = await this.userService
+        .isExistUserByEmail({
+          email: email,
+        })
+        .toPromise();
+
+      let user;
+      if (isExistUser.isExist) {
+        throw new GrpcUserExistException();
+      } else {
+        user = await this.userService
+          .createUser({
+            email: email,
+            password: password,
+          })
+          .toPromise();
+      }
+
+      return res.json({
+        result: 'ok',
+        status: HttpStatus.OK,
+        data: {
+          user: user,
+        },
+      });
+    } catch (err) {
+      if (!(err instanceof HttpException)) {
+        switch (err.error.message) {
+          case '이미 존재하는 유저입니다.':
+            throw new HttpException(
+              {
+                status: HttpStatus.CONFLICT,
+                message: err.message,
+                error: err.message,
+              },
+              HttpStatus.CONFLICT,
+            );
+          default:
+            throw new HttpException(
+              {
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                message: 'server error',
+                error: err.message,
+              },
+              HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+      }
+    }
   }
 
   @ApiOperation({ summary: '유저 기본 로그인' })
@@ -125,8 +191,8 @@ export class UserSignController implements OnModuleInit {
       });
     } catch (err) {
       if (!(err instanceof HttpException)) {
-        switch (err.error.code) {
-          case 5:
+        switch (err.error.message) {
+          case '존재하지 않는 유저입니다.':
             throw new HttpException(
               {
                 status: HttpStatus.NOT_FOUND,

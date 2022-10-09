@@ -3,25 +3,31 @@ syntax = "proto3";
 package user;
 
 service UserService {
+  rpc CreateUser(UserByEmailPasswordRequest) returns (UserResponse);
+  rpc IsExistUserByEmail(UserByEmailRequest) returns (IsExistUserByEmailResponse);
   rpc GetUserByEmail (UserByEmailRequest) returns (UserResponse);
   rpc GetUserByEmailPassword (UserByEmailPasswordRequest) returns (UserResponse);
   rpc GetActiveUserByEmail (UserByEmailRequest) returns (UserResponse);
 }
 
+/** request */
 message UserByEmailRequest {
   string email = 1;
 }
-
 message UserByEmailPasswordRequest {
   string email = 1;
   string password = 2;
 }
 
+/** response */
 message UserResponse {
   int32 id = 1;
   string email = 2;
   string status = 3;
   string createdDate = 4;
   string updatedDate = 5;
+}
+message IsExistUserByEmailResponse {
+  bool isExist = 1;
 }
 

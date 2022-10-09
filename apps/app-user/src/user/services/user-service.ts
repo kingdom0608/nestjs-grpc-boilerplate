@@ -18,6 +18,7 @@ export class UserService {
    * @param userData
    * @return Promise<UserEntity>
    */
+  @GrpcMethod('UserService', 'CreateUser')
   async createUser(userData: {
     email: string;
     password: string;
@@ -30,11 +31,37 @@ export class UserService {
   }
 
   /**
+   * 유저 존재 유무
+   * @param email: string
+   */
+  @GrpcMethod('UserService', 'IsExistUserByEmail')
+  async isExistUserByEmail({ email: email }): Promise<{
+    isExist: boolean;
+  }> {
+    let isExist = false;
+
+    /** 유저 이메일 조회 */
+    const user = await this.userRepository.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (user) {
+      isExist = true;
+    }
+
+    return {
+      isExist: isExist,
+    };
+  }
+
+  /**
    * 유저 아이디 조회
-   * @param id
+   * @param id: number
    * @return Promise<UserEntity>
    */
-  async getUserById(id: number): Promise<UserEntity> {
+  async getUserById({ id: id }): Promise<UserEntity> {
     return await this.userRepository.findOne({
       where: {
         id: id,
@@ -44,7 +71,7 @@ export class UserService {
 
   /**
    * 유저 이메일 조회
-   * @param email
+   * @param email: string
    * @return Promise<UserEntity>
    */
   @GrpcMethod('UserService', 'GetUserByEmail')
@@ -56,8 +83,8 @@ export class UserService {
 
   /**
    * 유저 이메일&비밀번호 조회
-   * @param email
-   * @param password
+   * @param email: string
+   * @param password: string
    */
   @GrpcMethod('UserService', 'GetUserByEmailPassword')
   async getUserByEmailPassword({
@@ -72,7 +99,7 @@ export class UserService {
 
   /**
    * 활성 유저 이메일 조회
-   * @param email
+   * @param email: string
    */
   @GrpcMethod('UserService', 'GetActiveUserByEmail')
   async getActiveUserByEmail({ email: email }): Promise<UserEntity> {
@@ -84,14 +111,18 @@ export class UserService {
 
   /**
    * 유저 삭제
-   * @param id
+   * @param id: number
    * @return Promise<UserEntity>
    */
-  async deleteUserById(id: number): Promise<UserEntity> {
-    const user = await this.getUserById(id);
+  async deleteUserById({ id: id }): Promise<UserEntity> {
+    const user = await this.getUserById({
+      id: id,
+    });
 
     /** 유저 삭제 */
-    await this.userRepository.delete(id);
+    await this.userRepository.delete({
+      id: id,
+    });
 
     return user;
   }

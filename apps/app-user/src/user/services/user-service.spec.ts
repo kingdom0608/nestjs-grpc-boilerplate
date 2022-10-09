@@ -48,7 +48,9 @@ describe('UserService', () => {
   });
 
   it('getUserById', async () => {
-    const result = await userService.getUserById(createdUser.id);
+    const result = await userService.getUserById({
+      id: createdUser.id,
+    });
     // console.log(result);
     expect(result.email).toEqual(testEmail);
   });
@@ -62,7 +64,9 @@ describe('UserService', () => {
   });
 
   it('deleteUserById', async () => {
-    const result = await userService.deleteUserById(createdUser.id);
+    const result = await userService.deleteUserById({
+      id: createdUser.id,
+    });
     // console.log(result);
     expect(result.email).toEqual(testEmail);
   });
