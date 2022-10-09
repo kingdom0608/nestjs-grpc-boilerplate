@@ -3,12 +3,15 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { HttpException, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { configureGrpc } from '@app/config';
+import * as fs from 'fs';
 import { AppUserModule } from './app-user-module';
 import { UserModule } from './user/user-module';
 import { setupSwagger } from '../../../swagger';
 
 async function bootstrap() {
-  const port = 3000;
+  const port = process.env.STAGE === 'prod' ? 3000 : 3000;
+  const file = './package.json';
+  const packageJsonData = JSON.parse(fs.readFileSync(file, 'utf8'));
   const app = await NestFactory.create<NestExpressApplication>(AppUserModule, {
     cors: true,
   });
@@ -43,7 +46,10 @@ async function bootstrap() {
   await app.listen(port);
   await userApp.listen();
 
-  console.log(`🚀 server ready at http://localhost:${port} 🚀`);
+  console.log(`✅ server ready at http://localhost:${port}`);
+  console.log(
+    `✅ swagger ready at http://localhost:${port}/app-user/${packageJsonData.version}/docs`,
+  );
 }
 
 bootstrap();
