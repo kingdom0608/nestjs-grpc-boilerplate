@@ -19,9 +19,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ClientGrpc } from '@nestjs/microservices';
-import { AuthenticationGuard } from '@app/authentication';
+import { AuthenticationGuard, CurrentUser } from '@app/authentication';
 import { Request, Response } from 'express';
-import { UserService } from '../user/services';
 import {
   BadRequestType,
   ConflictType,
@@ -31,7 +30,9 @@ import {
   UnauthorizedType,
   UserResponseType,
 } from './types';
+import { UserService } from '../user/services';
 import { ProductService } from '../../../app-product/src/product/services';
+import { GrpcUserNotFoundException } from '../user/exceptions';
 
 @ApiTags('유저')
 @ApiResponse({
@@ -74,27 +75,29 @@ export class UserController implements OnModuleInit {
       this.productClient.getService<ProductService>('ProductService');
   }
 
-  @ApiOperation({ summary: '유저 이메일 조회' })
+  @ApiOperation({ summary: '유저 조회' })
   @ApiOkResponse({ type: UserResponseType })
   @ApiBearerAuth('authentication')
-  @ApiParam({
-    name: 'email',
-    required: true,
-    description: '이메일',
-  })
   @UseGuards(AuthenticationGuard)
-  @Get('/user/emails/:email')
+  @Get('/user')
   async getUserByEmail(
-    @Param('email') email: string,
+    @CurrentUser() currentUser,
     @Req() req: Request,
     @Res() res: Response,
   ) {
     try {
       const user = await this.userService
-        .getUserByEmail({
-          email: email,
+        .getUserById({
+          id: currentUser.id,
         })
-        .toPromise();
+        .toPromise()
+        .catch((err) => {
+          if (err.message.includes('undefined')) {
+            throw new GrpcUserNotFoundException();
+          } else {
+            throw err;
+          }
+        });
 
       /** product gRPC 통신 부분 */
       // await this.productService
@@ -112,17 +115,27 @@ export class UserController implements OnModuleInit {
       });
     } catch (err) {
       if (!(err instanceof HttpException)) {
-        throw new HttpException(
-          {
-            status: HttpStatus.INTERNAL_SERVER_ERROR,
-            message: 'server error',
-            error: err.message,
-          },
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
+        switch (err.error.message) {
+          case '존재하지 않는 유저입니다.':
+            throw new HttpException(
+              {
+                status: HttpStatus.NOT_FOUND,
+                message: err.message,
+                error: err.message,
+              },
+              HttpStatus.NOT_FOUND,
+            );
+          default:
+            throw new HttpException(
+              {
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                message: 'server error',
+                error: err.message,
+              },
+              HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
       }
-
-      throw err;
     }
   }
 }

@@ -5,12 +5,16 @@ package user;
 service UserService {
   rpc CreateUser(UserByEmailPasswordRequest) returns (UserResponse);
   rpc IsExistUserByEmail(UserByEmailRequest) returns (IsExistUserByEmailResponse);
+  rpc GetUserById(UserByIdRequest) returns (UserResponse);
   rpc GetUserByEmail (UserByEmailRequest) returns (UserResponse);
   rpc GetUserByEmailPassword (UserByEmailPasswordRequest) returns (UserResponse);
   rpc GetActiveUserByEmail (UserByEmailRequest) returns (UserResponse);
 }
 
 /** request */
+message UserByIdRequest {
+  string id = 1;
+}
 message UserByEmailRequest {
   string email = 1;
 }

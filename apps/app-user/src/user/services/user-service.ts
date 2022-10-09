@@ -61,6 +61,7 @@ export class UserService {
    * @param id: number
    * @return Promise<UserEntity>
    */
+  @GrpcMethod('UserService', 'GetUserById')
   async getUserById({ id: id }): Promise<UserEntity> {
     return await this.userRepository.findOne({
       where: {
