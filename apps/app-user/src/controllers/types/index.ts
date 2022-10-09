@@ -1,4 +1,4 @@
-export * from './response-type';
+export * from './error-response-type';
 /** response */
 export * from './user-response-type';
 export * from './user-sign-response-type';
