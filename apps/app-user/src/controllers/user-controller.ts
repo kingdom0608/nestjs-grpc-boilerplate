@@ -5,7 +5,7 @@ import {
   HttpStatus,
   Inject,
   OnModuleInit,
-  Param,
+  Post,
   Req,
   Res,
   UseGuards,
@@ -14,7 +14,6 @@ import {
   ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
-  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -31,8 +30,8 @@ import {
   UserResponseType,
 } from './types';
 import { UserService } from '../user/services';
-import { ProductService } from '../../../app-product/src/product/services';
 import { GrpcUserNotFoundException } from '../user/exceptions';
+import { ProductService } from '../../../app-product/src/product/services';
 
 @ApiTags('유저')
 @ApiResponse({
@@ -105,6 +104,64 @@ export class UserController implements OnModuleInit {
       //     id: 2, // 테스트 위한 고정 값
       //   })
       //   .toPromise();
+
+      return res.json({
+        result: 'ok',
+        status: HttpStatus.OK,
+        data: {
+          user: user,
+        },
+      });
+    } catch (err) {
+      if (!(err instanceof HttpException)) {
+        switch (err.error.message) {
+          case '존재하지 않는 유저입니다.':
+            throw new HttpException(
+              {
+                status: HttpStatus.NOT_FOUND,
+                message: err.message,
+                error: err.message,
+              },
+              HttpStatus.NOT_FOUND,
+            );
+          default:
+            throw new HttpException(
+              {
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                message: 'server error',
+                error: err.message,
+              },
+              HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+      }
+    }
+  }
+
+  @ApiOperation({ summary: '유저 소프트 삭제' })
+  @ApiOkResponse({ type: UserResponseType })
+  @ApiBearerAuth('authentication')
+  @UseGuards(AuthenticationGuard)
+  @Post('/user')
+  async softDeleteUser(
+    @CurrentUser() currentUser,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      console.log(currentUser);
+      const user = await this.userService
+        .softDeleteUserById({
+          id: currentUser.id,
+        })
+        .toPromise()
+        .catch((err) => {
+          if (err.message.includes('undefined')) {
+            throw new GrpcUserNotFoundException();
+          } else {
+            throw err;
+          }
+        });
 
       return res.json({
         result: 'ok',

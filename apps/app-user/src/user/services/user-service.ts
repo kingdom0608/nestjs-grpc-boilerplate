@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GrpcMethod } from '@nestjs/microservices';
 import { EncryptUtil } from '@app/util';
-import { Repository } from 'typeorm';
+import { Connection, Not, Repository } from 'typeorm';
 import { UserEntity } from '../entities';
+import { UserStatus } from '../enums';
+import { IsNotEmpty } from 'class-validator';
 
 @Injectable()
 export class UserService {
@@ -11,6 +13,7 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly encryptUtil: EncryptUtil,
+    private connection: Connection,
   ) {}
 
   /**
@@ -32,7 +35,7 @@ export class UserService {
         : null,
       name: userData.name,
       provider: userData.provider,
-      status: 'ACTIVE',
+      status: UserStatus.ACTIVE,
     });
   }
 
@@ -112,7 +115,38 @@ export class UserService {
   async getActiveUserByEmail({ email: email }): Promise<UserEntity> {
     return await this.userRepository.findOne({
       email: email,
-      status: 'ACTIVE',
+      status: UserStatus.ACTIVE,
+    });
+  }
+
+  /**
+   * 유저 소프트 삭제 변경
+   * @param id: number
+   */
+  @GrpcMethod('UserService', 'SoftDeleteUserById')
+  async softDeleteUserById({ id: id }) {
+    await this.connection.transaction(async () => {
+      /** 유저 상태 업데이트 */
+      await this.userRepository.update(
+        {
+          id: id,
+        },
+        {
+          status: UserStatus.DELETE,
+        },
+      );
+
+      /** 유저 소프트 삭제 */
+      await this.userRepository.softDelete({
+        id: id,
+      });
+    });
+
+    return this.userRepository.findOne({
+      where: {
+        id: id,
+      },
+      withDeleted: true,
     });
   }
 
@@ -122,8 +156,11 @@ export class UserService {
    * @return Promise<UserEntity>
    */
   async deleteUserById({ id: id }): Promise<UserEntity> {
-    const user = await this.getUserById({
-      id: id,
+    const user = await this.userRepository.findOne({
+      where: {
+        id: id,
+      },
+      withDeleted: true,
     });
 
     /** 유저 삭제 */

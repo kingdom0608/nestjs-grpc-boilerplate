@@ -7,6 +7,16 @@ export class UserResponseType {
   @ApiProperty({ type: String, description: '이메일' })
   readonly email: string;
 
+  @ApiProperty({ type: String, description: '이름' })
+  readonly name: string;
+
+  @ApiProperty({
+    type: String,
+    description: '제공자',
+    enum: ['BASIC', 'KAKAO'],
+  })
+  readonly provider: string;
+
   @ApiProperty({
     type: String,
     description: '상태',

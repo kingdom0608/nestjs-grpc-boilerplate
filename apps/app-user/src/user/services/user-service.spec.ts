@@ -66,6 +66,14 @@ describe('UserService', () => {
     expect(result.email).toEqual(testEmail);
   });
 
+  it('softDeleteUserById', async () => {
+    const result = await userService.softDeleteUserById({
+      id: createdUser.id,
+    });
+    // console.log(result);
+    expect(result.email).toEqual(testEmail);
+  });
+
   it('deleteUserById', async () => {
     const result = await userService.deleteUserById({
       id: createdUser.id,
