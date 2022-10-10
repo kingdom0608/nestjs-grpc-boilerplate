@@ -2,10 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GrpcMethod } from '@nestjs/microservices';
 import { EncryptUtil } from '@app/util';
-import { Connection, Not, Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { UserEntity } from '../entities';
 import { UserStatus } from '../enums';
-import { IsNotEmpty } from 'class-validator';
 
 @Injectable()
 export class UserService {
