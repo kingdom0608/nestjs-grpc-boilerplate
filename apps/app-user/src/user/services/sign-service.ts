@@ -8,6 +8,10 @@ export class SignService {
   private kakaoRedirectUrlForSignUp = 'http://localhost:3000/user/signUp/kakao';
   private kakaoRedirectUrlForSignIn = 'http://localhost:3000/user/signIn/kakao';
 
+  /**
+   * 카카오 회원가입
+   * @param code
+   */
   async signUpForKakao(code: string) {
     const tokenResponse = await axios.post(
       this.kakaoTokenUrl,
@@ -39,6 +43,10 @@ export class SignService {
     };
   }
 
+  /**
+   * 카카오 로그인
+   * @param code
+   */
   async signInForKakao(code: string) {
     const tokenResponse = await axios.post(
       this.kakaoTokenUrl,
