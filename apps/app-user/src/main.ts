@@ -22,6 +22,11 @@ async function bootstrap() {
     },
   );
 
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+
   setupSwagger(app, 'user');
   app.useGlobalPipes(
     new ValidationPipe({

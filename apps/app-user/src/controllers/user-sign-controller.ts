@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Inject,
   OnModuleInit,
   Post,
+  Query,
   Req,
   Res,
 } from '@nestjs/common';
@@ -28,14 +30,14 @@ import {
   UserSignUpInputType,
 } from './types';
 import { ClientGrpc } from '@nestjs/microservices';
+import { AuthenticationStrategy } from '@app/authentication';
 import { Request, Response } from 'express';
-import { UserService } from '../user/services';
+import { SignService, UserService } from '../user/services';
 import {
   GrpcUserExistException,
   GrpcUserNotFoundException,
   GrpcUserPasswordWrongException,
 } from '../user/exceptions';
-import { AuthenticationStrategy } from '@app/authentication';
 
 @ApiTags('유저 회원')
 @ApiResponse({
@@ -68,6 +70,7 @@ export class UserSignController implements OnModuleInit {
 
   constructor(
     @Inject('USER_PACKAGE') private readonly userClient: ClientGrpc,
+    private readonly signService: SignService,
     private readonly authenticationStrategy: AuthenticationStrategy,
   ) {}
 
@@ -84,7 +87,7 @@ export class UserSignController implements OnModuleInit {
     @Body() dto: UserSignUpInputType,
   ) {
     try {
-      const { email, password } = dto;
+      const { email, password, name } = dto;
 
       /** 유저 존재 여부 확인 */
       const isExistUser = await this.userService
@@ -101,6 +104,73 @@ export class UserSignController implements OnModuleInit {
           .createUser({
             email: email,
             password: password,
+            name: name,
+            provider: 'BASIC',
+          })
+          .toPromise();
+      }
+
+      return res.json({
+        result: 'ok',
+        status: HttpStatus.OK,
+        data: {
+          user: user,
+        },
+      });
+    } catch (err) {
+      if (!(err instanceof HttpException)) {
+        switch (err.error.message) {
+          case '이미 존재하는 유저입니다.':
+            throw new HttpException(
+              {
+                status: HttpStatus.CONFLICT,
+                message: err.message,
+                error: err.message,
+              },
+              HttpStatus.CONFLICT,
+            );
+          default:
+            throw new HttpException(
+              {
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                message: 'server error',
+                error: err.message,
+              },
+              HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+      }
+    }
+  }
+
+  @ApiOperation({ summary: '유저 카카오 회원가입' })
+  @ApiOkResponse({ type: UserResponseType })
+  @Get('/user/signUp/kakao')
+  async signUpForKakao(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query('code') code: string,
+  ) {
+    try {
+      /** 카카오 정보 조회 */
+      const userResponse = await this.signService.signUpForKakao(code);
+
+      /** 유저 존재 여부 확인 */
+      const isExistUser = await this.userService
+        .isExistUserByEmail({
+          email: userResponse.data.kakao_account.email,
+        })
+        .toPromise();
+
+      let user;
+      if (isExistUser.isExist) {
+        throw new GrpcUserExistException();
+      } else {
+        user = await this.userService
+          .createUser({
+            email: userResponse.data.kakao_account.email,
+            name: userResponse.data.kakao_account.profile.nickname,
+            provider: 'KAKAO',
           })
           .toPromise();
       }
@@ -179,6 +249,73 @@ export class UserSignController implements OnModuleInit {
         });
 
       const issueToken = await this.authenticationStrategy.issueToken(user.id);
+
+      return res.json({
+        result: 'ok',
+        status: HttpStatus.OK,
+        data: {
+          user: user,
+          accessToken: issueToken.accessToken,
+          refreshToken: issueToken.refreshToken,
+        },
+      });
+    } catch (err) {
+      if (!(err instanceof HttpException)) {
+        switch (err.error.message) {
+          case '존재하지 않는 유저입니다.':
+            throw new HttpException(
+              {
+                status: HttpStatus.NOT_FOUND,
+                message: err.message,
+                error: err.message,
+              },
+              HttpStatus.NOT_FOUND,
+            );
+          default:
+            throw new HttpException(
+              {
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                message: 'server error',
+                error: err.message,
+              },
+              HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+      }
+    }
+  }
+
+  @ApiOperation({ summary: '유저 카카오 로그인' })
+  @ApiOkResponse({ type: UserSignResponseType })
+  @Get('/user/signIn/kakao')
+  async signInForKakao(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query('code') code: string,
+  ) {
+    try {
+      /** 카카오 정보 조회 */
+      const userResponse = await this.signService.signInForKakao(code);
+
+      /** 유저 존재 여부 확인 */
+      const isExistUser = await this.userService
+        .isExistUserByEmail({
+          email: userResponse.data.kakao_account.email,
+        })
+        .toPromise();
+
+      let user;
+      let issueToken;
+      if (isExistUser.isExist) {
+        user = await this.userService
+          .getUserByEmail({
+            email: userResponse.data.kakao_account.email,
+          })
+          .toPromise();
+        issueToken = await this.authenticationStrategy.issueToken(user.id);
+      } else {
+        throw new GrpcUserNotFoundException();
+      }
 
       return res.json({
         result: 'ok',

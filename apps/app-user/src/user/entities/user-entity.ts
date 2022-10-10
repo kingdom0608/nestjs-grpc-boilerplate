@@ -19,10 +19,16 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 30, nullable: false, unique: true })
   email: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: false, unique: false })
+  @Column({ type: 'varchar', length: 50, nullable: true, unique: false })
   password: string;
 
   @Column({ type: 'varchar', length: 30, nullable: false, unique: false })
+  name: string;
+
+  @Column({ type: 'varchar', length: 10, nullable: false, unique: false })
+  provider: string;
+
+  @Column({ type: 'varchar', length: 10, nullable: false, unique: false })
   status: string;
 
   @CreateDateColumn({ type: 'datetime', nullable: false })

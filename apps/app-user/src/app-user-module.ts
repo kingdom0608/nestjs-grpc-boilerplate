@@ -4,6 +4,7 @@ import { ClientsModule } from '@nestjs/microservices';
 import { configureGrpc, parsedEnvFile } from '@app/config';
 import { AuthenticationModule } from '@app/authentication';
 import { UserController, UserSignController } from './controllers';
+import { SignService } from './user/services';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { UserController, UserSignController } from './controllers';
     AuthenticationModule,
   ],
   controllers: [UserController, UserSignController],
-  providers: [],
+  providers: [SignService],
 })
 export class AppUserModule {}

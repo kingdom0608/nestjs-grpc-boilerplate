@@ -9,7 +9,7 @@ import {
 } from '@app/config';
 import { UtilModule } from '@app/util';
 import { UserEntity } from './entities';
-import { UserService } from './services';
+import { SignService, UserService } from './services';
 
 @Module({
   imports: [
@@ -34,6 +34,7 @@ import { UserService } from './services';
     UtilModule,
   ],
   controllers: [UserService],
-  providers: [],
+  providers: [SignService],
+  exports: [SignService],
 })
 export class UserModule {}

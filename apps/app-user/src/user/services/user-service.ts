@@ -21,11 +21,17 @@ export class UserService {
   @GrpcMethod('UserService', 'CreateUser')
   async createUser(userData: {
     email: string;
-    password: string;
+    password?: string;
+    name: string;
+    provider: string;
   }): Promise<UserEntity> {
     return this.userRepository.save({
       email: userData.email,
-      password: this.encryptUtil.encryptForPassword(userData.password),
+      password: userData.password
+        ? this.encryptUtil.encryptForPassword(userData.password)
+        : null,
+      name: userData.name,
+      provider: userData.provider,
       status: 'ACTIVE',
     });
   }
