@@ -141,7 +141,6 @@ export class UserService {
       /** 유저 소프트 삭제 */
       await this.userRepository.softDelete({
         id: id,
-        error,
       });
     });
 
