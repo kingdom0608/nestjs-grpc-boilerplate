@@ -26,8 +26,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: step3 - install & compile package
+      - name: step3 - install package
         run:
           yarn add yarn run lint tsc
+
+      - name: step4 - compile package
+        run:
           tsc
 
