@@ -19,7 +19,7 @@ jobs:
       - name: step2 - setup node
         uses: actions/setup-node@v3
         with:
-            node-version: [ 16.x ]
+          node-version: 16.14.0
 
       - name: step3 - install & compile package
         run:
