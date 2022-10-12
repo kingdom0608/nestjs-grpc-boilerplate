@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GrpcMethod } from '@nestjs/microservices';
 import { EncryptUtil } from '@app/util';
-import { DataSource, Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { UserEntity } from '../entities';
 import { UserStatus } from '../enums';
 
@@ -12,7 +12,7 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly encryptUtil: EncryptUtil,
-    private dataSource: DataSource,
+    private connection: Connection,
   ) {}
 
   /**
@@ -127,7 +127,7 @@ export class UserService {
    */
   @GrpcMethod('UserService', 'SoftDeleteUserById')
   async softDeleteUserById({ id: id }) {
-    await this.dataSource.transaction(async () => {
+    await this.connection.transaction(async () => {
       /** 유저 상태 업데이트 */
       await this.userRepository.update(
         {
