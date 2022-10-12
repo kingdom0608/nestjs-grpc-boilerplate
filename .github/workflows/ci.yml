@@ -1,4 +1,4 @@
-name: ci
+name: project ci
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: build
+    name: project build
 
     strategy:
       matrix:
@@ -17,10 +17,15 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: checkout source code step
+      - name: step1 - checkout source code
         uses: actions/checkout@v3
 
-      - name: build step
+      - name: step2 - package install
         run:
-          yarn add yarn run lint tsc
+          yarn install
+
+      - name: step3 - package compile
+        run:
+          yarn run tsc
+          yarn run lint
 
