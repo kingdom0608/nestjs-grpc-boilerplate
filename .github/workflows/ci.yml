@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: build
+
+    strategy:
+      matrix:
+        node-version: [ 16.x ]
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout source code step
+        uses: actions/checkout@v3
+
+      - name: build step
+        run:
+          yarn install
+          yarn run lint
+          tsc
+
