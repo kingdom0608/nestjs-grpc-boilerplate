@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GrpcMethod } from '@nestjs/microservices';
 import { EncryptUtil } from '@app/util';
-import { Connection, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { UserEntity } from '../entities';
 import { UserStatus } from '../enums';
 
@@ -12,7 +12,7 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly encryptUtil: EncryptUtil,
-    private connection: Connection,
+    private dataSource: DataSource,
   ) {}
 
   /**
@@ -86,7 +86,9 @@ export class UserService {
   @GrpcMethod('UserService', 'GetUserByEmail')
   async getUserByEmail({ email: email }): Promise<UserEntity> {
     return await this.userRepository.findOne({
-      email: email,
+      where: {
+        email: email,
+      },
     });
   }
 
@@ -101,8 +103,10 @@ export class UserService {
     password: password,
   }): Promise<UserEntity> {
     return await this.userRepository.findOne({
-      email: email,
-      password: this.encryptUtil.encryptForPassword(password),
+      where: {
+        email: email,
+        password: this.encryptUtil.encryptForPassword(password),
+      },
     });
   }
 
@@ -113,8 +117,7 @@ export class UserService {
   @GrpcMethod('UserService', 'GetActiveUserByEmail')
   async getActiveUserByEmail({ email: email }): Promise<UserEntity> {
     return await this.userRepository.findOne({
-      email: email,
-      status: UserStatus.ACTIVE,
+      where: { email: email, status: UserStatus.ACTIVE },
     });
   }
 
@@ -124,7 +127,7 @@ export class UserService {
    */
   @GrpcMethod('UserService', 'SoftDeleteUserById')
   async softDeleteUserById({ id: id }) {
-    await this.connection.transaction(async () => {
+    await this.dataSource.transaction(async () => {
       /** 유저 상태 업데이트 */
       await this.userRepository.update(
         {

@@ -1,0 +1,36 @@
+name: project ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: project build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 16.x ]
+
+    steps:
+      - name: step1 - checkout source code
+        uses: actions/checkout@v3
+
+      - name: step2 - setup node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: step3 - install package
+        run:
+          yarn add yarn run lint tsc
+
+      - name: step4 - compile package
+        run:
+          tsc
+
