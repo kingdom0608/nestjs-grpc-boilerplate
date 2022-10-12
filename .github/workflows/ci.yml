@@ -29,4 +29,5 @@ jobs:
       - name: step3 - install & compile package
         run:
           yarn add yarn run lint tsc
+          tsc
 
