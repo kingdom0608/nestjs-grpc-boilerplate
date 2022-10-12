@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserStatus } from '../../user/enums';
 
 export class UserResponseType {
   @ApiProperty({ type: Number, description: '아이디' })
@@ -21,7 +22,7 @@ export class UserResponseType {
     type: String,
     description: '상태',
     default: 'ACTIVE',
-    enum: ['ACTIVE', 'INACTIVE'],
+    enum: [UserStatus.ACTIVE, UserStatus.INACTIVE],
   })
   readonly status: string;
 
