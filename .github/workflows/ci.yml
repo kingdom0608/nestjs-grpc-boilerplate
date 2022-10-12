@@ -22,7 +22,5 @@ jobs:
 
       - name: build step
         run:
-          yarn install
-          yarn run lint
-          tsc
+          yarn add yarn run lint tsc
 
