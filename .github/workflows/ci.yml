@@ -11,21 +11,17 @@ jobs:
   build:
     name: project build
 
-    strategy:
-      matrix:
-        node-version: [ 16.x ]
-
     runs-on: ubuntu-latest
     steps:
       - name: step1 - checkout source code
         uses: actions/checkout@v3
 
-      - name: step2 - package install
-        run:
-          yarn install
+      - name: step2 - setup node
+        uses: actions/setup-node@v3
+        with:
+            node-version: [ 16.x ]
 
-      - name: step3 - package compile
+      - name: step3 - install & compile package
         run:
-          yarn run tsc
-          yarn run lint
+          yarn add yarn run lint tsc
 
