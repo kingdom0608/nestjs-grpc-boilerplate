@@ -63,9 +63,6 @@ export class SignService {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         },
-        validateStatus: function (status) {
-          return status >= 400;
-        },
       },
     );
 
@@ -83,9 +80,6 @@ export class SignService {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         Authorization: 'Bearer ' + tokenResponse.data.access_token,
-      },
-      validateStatus: function (status) {
-        return status >= 400;
       },
     });
 
