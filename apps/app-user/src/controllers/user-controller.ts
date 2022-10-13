@@ -32,6 +32,7 @@ import {
 import { UserService } from '../user/services';
 import { GrpcUserNotFoundException } from '../user/exceptions';
 import { ProductService } from '../../../app-product/src/product/services';
+import { UserErrorMessage } from '../user/enums';
 
 @ApiTags('유저')
 @ApiResponse({
@@ -115,7 +116,7 @@ export class UserController implements OnModuleInit {
     } catch (err) {
       if (!(err instanceof HttpException)) {
         switch (err.error.message) {
-          case '존재하지 않는 유저입니다.':
+          case UserErrorMessage.UNAUTHORIZED:
             throw new HttpException(
               {
                 status: HttpStatus.NOT_FOUND,
@@ -173,7 +174,7 @@ export class UserController implements OnModuleInit {
     } catch (err) {
       if (!(err instanceof HttpException)) {
         switch (err.error.message) {
-          case '존재하지 않는 유저입니다.':
+          case UserErrorMessage.UNAUTHORIZED:
             throw new HttpException(
               {
                 status: HttpStatus.NOT_FOUND,

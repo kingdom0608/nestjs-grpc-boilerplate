@@ -38,6 +38,7 @@ import {
   GrpcUserNotFoundException,
   GrpcUserPasswordWrongException,
 } from '../user/exceptions';
+import { UserErrorMessage } from '../user/enums';
 
 @ApiTags('유저 회원가입/로그인')
 @ApiResponse({
@@ -197,7 +198,7 @@ export class UserSignController implements OnModuleInit {
     } catch (err) {
       if (!(err instanceof HttpException)) {
         switch (err.error.message) {
-          case '존재하지 않는 유저입니다.':
+          case UserErrorMessage.UNAUTHORIZED:
             throw new HttpException(
               {
                 status: HttpStatus.NOT_FOUND,
@@ -261,7 +262,8 @@ export class UserSignController implements OnModuleInit {
       });
     } catch (err) {
       if (!(err instanceof HttpException)) {
-        switch (err.error.message) {
+        const errMessage: string = err.error ? err.error.message : err.message;
+        switch (errMessage) {
           case '이미 존재하는 유저입니다.':
             throw new HttpException(
               {
@@ -328,8 +330,18 @@ export class UserSignController implements OnModuleInit {
       });
     } catch (err) {
       if (!(err instanceof HttpException)) {
-        switch (err.error.message) {
-          case '존재하지 않는 유저입니다.':
+        const errMessage: string = err.error ? err.error.message : err.message;
+        switch (errMessage) {
+          case UserErrorMessage.UNAUTHORIZED:
+            throw new HttpException(
+              {
+                status: HttpStatus.UNAUTHORIZED,
+                message: err.message,
+                error: err.message,
+              },
+              HttpStatus.UNAUTHORIZED,
+            );
+          case UserErrorMessage.NOT_FOUND:
             throw new HttpException(
               {
                 status: HttpStatus.NOT_FOUND,

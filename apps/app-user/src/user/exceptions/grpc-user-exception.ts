@@ -1,12 +1,13 @@
 import * as grpc from '@grpc/grpc-js';
 import { RpcException } from '@nestjs/microservices';
+import { UserErrorMessage } from '../enums';
 
 /**
  * gRPC 존재하지 않는 유저 예외처리
  */
 export class GrpcUserNotFoundException extends RpcException {
   public constructor() {
-    const message = '존재하지 않는 유저입니다.';
+    const message = UserErrorMessage.UNAUTHORIZED;
     super({
       code: grpc.status.NOT_FOUND,
       message,

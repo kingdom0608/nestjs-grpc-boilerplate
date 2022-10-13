@@ -7,9 +7,10 @@ import { SignService } from './sign-service';
 describe('SignService', () => {
   let signService: SignService;
   let app: TestingModule;
-  /** 카카오 에서 발급한 코드를 받아서 삽입 */
-  const code =
-    'vo0wFOuXjgYZauofGqIT9T8ytj6gPDNiXhHlZUQqiVpKNlS6SrUd76KrfdkAOZ7OfEKLqwopyNoAAAGDwCrUdQ';
+  /** 카카오 에서 발급한 코드를 받아서 삽입
+   * targetUrl: https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code
+   */
+  const code = '';
 
   beforeAll(async () => {
     app = await Test.createTestingModule({
