@@ -5,6 +5,10 @@ import { EncryptUtil } from '@app/util';
 import { Connection, Repository } from 'typeorm';
 import { UserEntity } from '../entities';
 import { UserStatus } from '../enums';
+import {
+  GrpcUserNotFoundException,
+  GrpcUserNotFoundPasswordException,
+} from '../exceptions';
 
 @Injectable()
 export class UserService {
@@ -71,11 +75,17 @@ export class UserService {
    */
   @GrpcMethod('UserService', 'GetUserById')
   async getUserById({ id: id }): Promise<UserEntity> {
-    return await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: {
         id: id,
       },
     });
+
+    if (!user) {
+      throw new GrpcUserNotFoundException();
+    }
+
+    return user;
   }
 
   /**
@@ -85,11 +95,17 @@ export class UserService {
    */
   @GrpcMethod('UserService', 'GetUserByEmail')
   async getUserByEmail({ email: email }): Promise<UserEntity> {
-    return await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: {
         email: email,
       },
     });
+
+    if (!user) {
+      throw new GrpcUserNotFoundPasswordException();
+    }
+
+    return user;
   }
 
   /**
@@ -102,12 +118,18 @@ export class UserService {
     email: email,
     password: password,
   }): Promise<UserEntity> {
-    return await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: {
         email: email,
         password: this.encryptUtil.encryptForPassword(password),
       },
     });
+
+    if (!user) {
+      throw new GrpcUserNotFoundException();
+    }
+
+    return user;
   }
 
   /**
@@ -116,9 +138,15 @@ export class UserService {
    */
   @GrpcMethod('UserService', 'GetActiveUserByEmail')
   async getActiveUserByEmail({ email: email }): Promise<UserEntity> {
-    return await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { email: email, status: UserStatus.ACTIVE },
     });
+
+    if (!user) {
+      throw new GrpcUserNotFoundException();
+    }
+
+    return user;
   }
 
   /**
@@ -144,12 +172,18 @@ export class UserService {
       });
     });
 
-    return this.userRepository.findOne({
+    const user = this.userRepository.findOne({
       where: {
         id: id,
       },
       withDeleted: true,
     });
+
+    if (!user) {
+      throw new GrpcUserNotFoundPasswordException();
+    }
+
+    return user;
   }
 
   /**
@@ -164,6 +198,10 @@ export class UserService {
       },
       withDeleted: true,
     });
+
+    if (!user) {
+      throw new GrpcUserNotFoundPasswordException();
+    }
 
     /** 유저 삭제 */
     await this.userRepository.delete({
