@@ -7,7 +7,7 @@ import { UserErrorMessage } from '../enums';
  */
 export class GrpcUserNotFoundException extends RpcException {
   public constructor() {
-    const message = UserErrorMessage.UNAUTHORIZED;
+    const message = UserErrorMessage.NOT_FOUND;
     super({
       code: grpc.status.NOT_FOUND,
       message,
@@ -20,9 +20,9 @@ export class GrpcUserNotFoundException extends RpcException {
  */
 export class GrpcUserExistException extends RpcException {
   public constructor() {
-    const message = '이미 존재하는 유저입니다.';
+    const message = UserErrorMessage.CONFLICT;
     super({
-      code: grpc.status.NOT_FOUND,
+      code: grpc.status.ALREADY_EXISTS,
       message,
     });
   }
@@ -31,9 +31,9 @@ export class GrpcUserExistException extends RpcException {
 /**
  * gRPC 유저 비밀번호 불일치 오류 예외처리
  */
-export class GrpcUserPasswordWrongException extends RpcException {
+export class GrpcUserNotFoundPasswordException extends RpcException {
   public constructor() {
-    const message = '유저 비밀번호가 올바르지 않습니다.';
+    const message = UserErrorMessage.NOT_FOUND_PASSWORD;
     super({
       code: grpc.status.NOT_FOUND,
       message,

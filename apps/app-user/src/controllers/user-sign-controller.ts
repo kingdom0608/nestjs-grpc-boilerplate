@@ -33,11 +33,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { AuthenticationStrategy } from '@app/authentication';
 import { Request, Response } from 'express';
 import { SignService, UserService } from '../user/services';
-import {
-  GrpcUserExistException,
-  GrpcUserNotFoundException,
-  GrpcUserPasswordWrongException,
-} from '../user/exceptions';
+import { HttpUserException } from '../user/exceptions';
 import { UserErrorMessage } from '../user/enums';
 
 @ApiTags('유저 회원가입/로그인')
@@ -99,7 +95,7 @@ export class UserSignController implements OnModuleInit {
 
       let user;
       if (isExistUser.isExist) {
-        throw new GrpcUserExistException();
+        throw new Error(UserErrorMessage.CONFLICT);
       } else {
         user = await this.userService
           .createUser({
@@ -119,28 +115,7 @@ export class UserSignController implements OnModuleInit {
         },
       });
     } catch (err) {
-      if (!(err instanceof HttpException)) {
-        switch (err.error.message) {
-          case '이미 존재하는 유저입니다.':
-            throw new HttpException(
-              {
-                status: HttpStatus.CONFLICT,
-                message: err.message,
-                error: err.message,
-              },
-              HttpStatus.CONFLICT,
-            );
-          default:
-            throw new HttpException(
-              {
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'server error',
-                error: err.message,
-              },
-              HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        }
-      }
+      throw new HttpUserException(err);
     }
   }
 
@@ -160,14 +135,7 @@ export class UserSignController implements OnModuleInit {
         .getActiveUserByEmail({
           email: email,
         })
-        .toPromise()
-        .catch((err) => {
-          if (err.message.includes('undefined')) {
-            throw new GrpcUserNotFoundException();
-          } else {
-            throw err;
-          }
-        });
+        .toPromise();
 
       /** 비밀번호 체크 */
       const user = await this.userService
@@ -175,14 +143,7 @@ export class UserSignController implements OnModuleInit {
           email,
           password,
         })
-        .toPromise()
-        .catch((err) => {
-          if (err.message.includes('undefined')) {
-            throw new GrpcUserPasswordWrongException();
-          } else {
-            throw err;
-          }
-        });
+        .toPromise();
 
       const issueToken = await this.authenticationStrategy.issueToken(user.id);
 
@@ -196,28 +157,7 @@ export class UserSignController implements OnModuleInit {
         },
       });
     } catch (err) {
-      if (!(err instanceof HttpException)) {
-        switch (err.error.message) {
-          case UserErrorMessage.UNAUTHORIZED:
-            throw new HttpException(
-              {
-                status: HttpStatus.NOT_FOUND,
-                message: err.message,
-                error: err.message,
-              },
-              HttpStatus.NOT_FOUND,
-            );
-          default:
-            throw new HttpException(
-              {
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'server error',
-                error: err.message,
-              },
-              HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        }
-      }
+      throw new HttpUserException(err);
     }
   }
 
@@ -242,7 +182,7 @@ export class UserSignController implements OnModuleInit {
 
       let user;
       if (isExistUser.isExist) {
-        throw new GrpcUserExistException();
+        throw new Error(UserErrorMessage.CONFLICT);
       } else {
         user = await this.userService
           .createUser({
@@ -261,29 +201,7 @@ export class UserSignController implements OnModuleInit {
         },
       });
     } catch (err) {
-      if (!(err instanceof HttpException)) {
-        const errMessage: string = err.error ? err.error.message : err.message;
-        switch (errMessage) {
-          case '이미 존재하는 유저입니다.':
-            throw new HttpException(
-              {
-                status: HttpStatus.CONFLICT,
-                message: err.message,
-                error: err.message,
-              },
-              HttpStatus.CONFLICT,
-            );
-          default:
-            throw new HttpException(
-              {
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'server error',
-                error: err.message,
-              },
-              HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        }
-      }
+      throw new HttpUserException(err);
     }
   }
 
@@ -306,18 +224,18 @@ export class UserSignController implements OnModuleInit {
         })
         .toPromise();
 
-      let user;
-      let issueToken;
-      if (isExistUser.isExist) {
-        user = await this.userService
-          .getUserByEmail({
-            email: userResponse.data.kakao_account.email,
-          })
-          .toPromise();
-        issueToken = await this.authenticationStrategy.issueToken(user.id);
-      } else {
-        throw new GrpcUserNotFoundException();
+      /** 유저가 없을 경우 예외 처리 */
+      if (isExistUser.isExist === false) {
+        throw new Error(UserErrorMessage.NOT_FOUND);
       }
+
+      /** 유저 & 토큰 조회 */
+      const user = await this.userService
+        .getUserByEmail({
+          email: userResponse.data.kakao_account.email,
+        })
+        .toPromise();
+      const issueToken = await this.authenticationStrategy.issueToken(user.id);
 
       return res.json({
         result: 'ok',
@@ -329,38 +247,7 @@ export class UserSignController implements OnModuleInit {
         },
       });
     } catch (err) {
-      if (!(err instanceof HttpException)) {
-        const errMessage: string = err.error ? err.error.message : err.message;
-        switch (errMessage) {
-          case UserErrorMessage.UNAUTHORIZED:
-            throw new HttpException(
-              {
-                status: HttpStatus.UNAUTHORIZED,
-                message: err.message,
-                error: err.message,
-              },
-              HttpStatus.UNAUTHORIZED,
-            );
-          case UserErrorMessage.NOT_FOUND:
-            throw new HttpException(
-              {
-                status: HttpStatus.NOT_FOUND,
-                message: err.message,
-                error: err.message,
-              },
-              HttpStatus.NOT_FOUND,
-            );
-          default:
-            throw new HttpException(
-              {
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'server error',
-                error: err.message,
-              },
-              HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        }
-      }
+      throw new HttpUserException(err);
     }
   }
 }

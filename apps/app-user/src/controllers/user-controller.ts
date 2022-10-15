@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -30,7 +31,10 @@ import {
   UserResponseType,
 } from './types';
 import { UserService } from '../user/services';
-import { GrpcUserNotFoundException } from '../user/exceptions';
+import {
+  GrpcUserNotFoundException,
+  HttpUserException,
+} from '../user/exceptions';
 import { ProductService } from '../../../app-product/src/product/services';
 import { UserErrorMessage } from '../user/enums';
 
@@ -80,7 +84,7 @@ export class UserController implements OnModuleInit {
   @ApiBearerAuth('authentication')
   @UseGuards(AuthenticationGuard)
   @Get('/user')
-  async getUserByEmail(
+  async getUser(
     @CurrentUser() currentUser,
     @Req() req: Request,
     @Res() res: Response,
@@ -90,14 +94,7 @@ export class UserController implements OnModuleInit {
         .getUserById({
           id: currentUser.id,
         })
-        .toPromise()
-        .catch((err) => {
-          if (err.message.includes('undefined')) {
-            throw new GrpcUserNotFoundException();
-          } else {
-            throw err;
-          }
-        });
+        .toPromise();
 
       /** product gRPC 통신 부분 */
       // await this.productService
@@ -114,28 +111,7 @@ export class UserController implements OnModuleInit {
         },
       });
     } catch (err) {
-      if (!(err instanceof HttpException)) {
-        switch (err.error.message) {
-          case UserErrorMessage.UNAUTHORIZED:
-            throw new HttpException(
-              {
-                status: HttpStatus.NOT_FOUND,
-                message: err.message,
-                error: err.message,
-              },
-              HttpStatus.NOT_FOUND,
-            );
-          default:
-            throw new HttpException(
-              {
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'server error',
-                error: err.message,
-              },
-              HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        }
-      }
+      throw new HttpUserException(err);
     }
   }
 
@@ -143,26 +119,18 @@ export class UserController implements OnModuleInit {
   @ApiOkResponse({ type: UserResponseType })
   @ApiBearerAuth('authentication')
   @UseGuards(AuthenticationGuard)
-  @Post('/user')
+  @Delete('/user')
   async softDeleteUser(
     @CurrentUser() currentUser,
     @Req() req: Request,
     @Res() res: Response,
   ) {
     try {
-      console.log(currentUser);
       const user = await this.userService
         .softDeleteUserById({
           id: currentUser.id,
         })
-        .toPromise()
-        .catch((err) => {
-          if (err.message.includes('undefined')) {
-            throw new GrpcUserNotFoundException();
-          } else {
-            throw err;
-          }
-        });
+        .toPromise();
 
       return res.json({
         result: 'ok',
@@ -172,28 +140,7 @@ export class UserController implements OnModuleInit {
         },
       });
     } catch (err) {
-      if (!(err instanceof HttpException)) {
-        switch (err.error.message) {
-          case UserErrorMessage.UNAUTHORIZED:
-            throw new HttpException(
-              {
-                status: HttpStatus.NOT_FOUND,
-                message: err.message,
-                error: err.message,
-              },
-              HttpStatus.NOT_FOUND,
-            );
-          default:
-            throw new HttpException(
-              {
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'server error',
-                error: err.message,
-              },
-              HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        }
-      }
+      throw new HttpUserException(err);
     }
   }
 }
